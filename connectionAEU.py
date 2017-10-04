@@ -16,6 +16,8 @@ class TakeDataSql ():
 
 
 
+
+
     def inputAeuSql(self):
         """ This funtion for input data to table CableWarehouse """
         readconn = self.connectionAeu
