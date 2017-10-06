@@ -1,5 +1,5 @@
 import pyodbc
-import inputSqlGUI
+import inputGUIsql
 
 class TakeDataSql ():
     """This class TakeDataSql working with data on sql, for warehaouse"""
@@ -7,25 +7,23 @@ class TakeDataSql ():
 
     def __init__(self):
         """ This function for connection to db aeu on server UACVDB01\SQL2008EXPRESS"""
-        connectionAeu = pyodbc.connect('Driver={SQL Server};'
+        self.connectionAeu = pyodbc.connect('Driver={SQL Server};'
                                        'Server=UACVDB01\SQL2008EXPRESS;'
                                        'Database=aeu;'
                                        'uid=sa;pwd=Prettl!@#4')
-        self.connectionAeu = connectionAeu
         self.cursor = self.connectionAeu.cursor()
-
-
-
 
 
     def inputAeuSql(self):
         """ This funtion for input data to table CableWarehouse """
+
         readconn = self.connectionAeu
         cursor = self.cursor
         insertSQLcommand = ("INSERT INTO CableWarehouse "
                                               "(MaterialNumber, VendorBatch, PlaceNumber)"
                                               "VALUES (?,?,?)")
-        valueMatNum = self.valueMatNum
+
+        valueMatNum = self.d
         valueVenBat = self.valueVenBat
         valuePlace = self.valuePlace
         Values = [valueMatNum, valueVenBat, valuePlace]
