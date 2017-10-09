@@ -2,9 +2,9 @@ import connectionAEU
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QToolTip,
                              QPushButton, QMessageBox, QDesktopWidget,
-                             QMainWindow, QAction, qApp, QLabel, QLineEdit)
-from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtCore import QCoreApplication
+                             QMainWindow, QAction, qApp, QLabel, QLineEdit, QHBoxLayout)
+from PyQt5.QtGui import QIcon, QFont, QPixmap, QIntValidator, QRegExpValidator, QKeyEvent
+from PyQt5.QtCore import QCoreApplication, Qt
 
 
 
@@ -16,6 +16,7 @@ class WarehouseInput (QWidget):
         super().__init__()
 
         self.initUI()
+        self.setFocusPolicy(Qt.StrongFocus)
 
 
 
@@ -27,11 +28,22 @@ class WarehouseInput (QWidget):
 
         self.setToolTip('This is a <b>Input data for warehouse</b> widget')
 
+        hbox = QHBoxLayout(self)
+        pixmap = QPixmap("D:\LearnPython\AEU\Input.png")
+
+        lbl = QLabel(self)
+        lbl.setPixmap(pixmap)
+
+        hbox.addWidget(lbl)
+        self.setLayout(hbox)
+
+
+
         qbtn = QPushButton('Quit', self)
         qbtn.clicked.connect(QCoreApplication.instance().quit)
         qbtn.setToolTip('This is a <b>QuitButton</b>')
         qbtn.resize(qbtn.sizeHint())
-        qbtn.move(370, 190)
+        qbtn.move(400, 410)
 
 
         self.setGeometry(450, 450, 450, 220)
@@ -76,21 +88,72 @@ class WarehouseInput (QWidget):
         self.setWindowTitle('Menubar')
         self.show()
 
-
     def inputLable(self):
         """Here lable for input data"""
-        self.lbl = QLabel(self)
-        qle = QLineEdit(self)
 
-        qle.move(160, 50)
-        self.lbl.move(60, 40)
+        self.qleValues = []
 
-        qle.textChanged[str].connect(self.onChanged)
+        self.lblMatNum = QLabel(self)
+        self.lblVenBat = QLabel(self)
+        self.lblPlace = QLabel(self)
 
-    def onChanged(self,text):
+        self.lblMatNum.setText('MatNum >')
+        self.lblMatNum.setFont(QFont("Arial", 12))
+        self.lblVenBat.setText('VenBat >')
+        self.lblVenBat.setFont(QFont("Arial", 12))
+        self.lblPlace.setText('Place>')
+        self.lblPlace.setFont(QFont("Arial", 11))
 
-        self.lbl.setText(text)
-        self.lbl.adjustSize()
+        qleMatNum = QLineEdit(self)
+        qleMatNum.setValidator(QIntValidator())
+        qleMatNum.setMaxLength(8)
+        qleMatNum.move(215, 305)
+        if qleMatNum.maxLength() == 8:
+            qleMatNum.text()
+            self.qleValues.append(qleMatNum)
+        else:
+            print('Incorect input')
+        if qleMatNum.setFocus(self):
+            qleMatNum.text()
+            self.qleValues.append(qleMatNum)
+        else:
+            print('Incorect input')
+
+
+
+        qleVenBat = QLineEdit(self)
+        qleVenBat.setValidator(QIntValidator())
+        qleVenBat.setMaxLength(10)
+
+        qlePlace = QLineEdit(self)
+        #qlePlace.setValidator(QRegExpValidator('W'))
+        qlePlace.setMaxLength(9)
+        qlePlace.setFont(QFont("Arial", 14))
+
+        qleMatNum.move(215, 305)
+        qleVenBat.move(215, 335)
+        qlePlace.move(215, 365)
+
+        self.lblMatNum.move(140, 305)
+        self.lblVenBat.move(150, 335)
+        self.lblPlace.move(170, 365)
+
+
+
+        qleVenBat.text()
+        self.qleValues.append(qleVenBat)
+        qP = qlePlace.text()
+        self.qleValues.append(qlePlace)
+
+        print(self.qleValues)
+
+        #self.qleValues = [qMN, qVB, qP]
+
+    #def enterPress(self, e):
+        #if e.key() == QKeyEvent.Enter
+
+
+
 
 
 
@@ -101,4 +164,5 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
     ex = WarehouseInput()
+
     sys.exit(app.exec_())

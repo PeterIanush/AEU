@@ -14,7 +14,7 @@ class TakeDataSql ():
         self.cursor = self.connectionAeu.cursor()
 
 
-    def inputAeuSql(self):
+    def inputAeuSql(self, ValueInterf):
         """ This funtion for input data to table CableWarehouse """
 
         readconn = self.connectionAeu
@@ -23,10 +23,10 @@ class TakeDataSql ():
                                               "(MaterialNumber, VendorBatch, PlaceNumber)"
                                               "VALUES (?,?,?)")
 
-        valueMatNum = self.d
-        valueVenBat = self.valueVenBat
-        valuePlace = self.valuePlace
-        Values = [valueMatNum, valueVenBat, valuePlace]
+        #valueMatNum = self.d
+        #valueVenBat = self.valueVenBat
+        #valuePlace = self.valuePlace
+        Values = ValueInterf
         cursor.execute(insertSQLcommand, Values)
         readconn.commit()
         readconn.close()
