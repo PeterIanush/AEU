@@ -26,14 +26,17 @@ class TakeDataSql ():
         #valueMatNum = self.d
         #valueVenBat = self.valueVenBat
         #valuePlace = self.valuePlace
-        Values = ValueInterf
-        cursor.execute(insertSQLcommand, Values)
+        #Values = ValueInterf
+        cursor.execute(insertSQLcommand, ValueInterf)
         readconn.commit()
         readconn.close()
 
 
     def readAeuSql(self):
         """ This funtion for reading data from table CableWarehouse"""
+        Vll = ['a', 'b', 'c']
+        self.conn = TakeDataSql.inputAeuSql(ValueInterf=Vll)
+
         pass
 
 

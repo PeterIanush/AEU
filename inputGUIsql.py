@@ -2,9 +2,12 @@ import connectionAEU
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QToolTip,
                              QPushButton, QMessageBox, QDesktopWidget,
-                             QMainWindow, QAction, qApp, QLabel, QLineEdit, QHBoxLayout)
+                             QMainWindow, QAction, qApp, QLabel, QLineEdit,
+                             QHBoxLayout, QInputDialog)
+
+
 from PyQt5.QtGui import QIcon, QFont, QPixmap, QIntValidator, QRegExpValidator, QKeyEvent
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import QCoreApplication, Qt, pyqtSlot
 
 
 
@@ -15,8 +18,11 @@ class WarehouseInput (QWidget):
         """Here we initialize GUI objects"""
         super().__init__()
 
-        self.initUI()
-        self.setFocusPolicy(Qt.StrongFocus)
+        #self.initUI()
+
+        self.initUIUser()
+
+
 
 
 
@@ -106,32 +112,35 @@ class WarehouseInput (QWidget):
 
         qleMatNum = QLineEdit(self)
         qleMatNum.setValidator(QIntValidator())
-        qleMatNum.setMaxLength(8)
+        qleMatNum.setMaxLength(9)
         qleMatNum.move(215, 305)
+        #ent = qleMatNum.keyPressEvent(QKeyEvent.Enter)
         if qleMatNum.maxLength() == 8:
             qleMatNum.text()
             self.qleValues.append(qleMatNum)
+            qleMatNum.setFocus(self.qleVenBat, QKeyEvent.Enter)
         else:
-            print('Incorect input')
-        if qleMatNum.setFocus(self):
-            qleMatNum.text()
-            self.qleValues.append(qleMatNum)
-        else:
-            print('Incorect input')
+            print('Incorect input', qleMatNum)
+        """if qleMatNum.editingFinished(ent):
+            self.qleValues.append(qleMatNum)"""
 
 
+        self.qleVenBat = QLineEdit(self)
+        self.qleVenBat.setValidator(QIntValidator())
+        self.qleVenBat.setMaxLength(11)
+        """if qleVenBat.keyPressEvent(QKeyEvent.Enter):
+            qleVenBat.text()
+            self.qleValues.append(qleVenBat)"""
 
-        qleVenBat = QLineEdit(self)
-        qleVenBat.setValidator(QIntValidator())
-        qleVenBat.setMaxLength(10)
 
         qlePlace = QLineEdit(self)
         #qlePlace.setValidator(QRegExpValidator('W'))
-        qlePlace.setMaxLength(9)
+        qlePlace.setMaxLength(10)
+        qlePlace.setInputMask('w9e-99-99')
         qlePlace.setFont(QFont("Arial", 14))
 
         qleMatNum.move(215, 305)
-        qleVenBat.move(215, 335)
+        self.qleVenBat.move(215, 335)
         qlePlace.move(215, 365)
 
         self.lblMatNum.move(140, 305)
@@ -140,18 +149,65 @@ class WarehouseInput (QWidget):
 
 
 
-        qleVenBat.text()
-        self.qleValues.append(qleVenBat)
+
         qP = qlePlace.text()
         self.qleValues.append(qlePlace)
 
+        return self.qleValues
+        a = WarehouseInput.writeAeuSql()
+
+
+
+    def enterPressFocus(event):
+        event.focusNextChild()
+
+    def writeAeuSql(self):
         print(self.qleValues)
+        conn = connectionAEU.TakeDataSql()
+        value = self.qleValues
+        conn.inputAeuSql(value)
 
-        #self.qleValues = [qMN, qVB, qP]
+    def initUIUser(self):
 
-    #def enterPress(self, e):
-        #if e.key() == QKeyEvent.Enter
+        hbox = QHBoxLayout(self)
+        pixmap = QPixmap("D:\LearnPython\AEU\logining.png")
 
+        lbl = QLabel(self)
+        lbl.setPixmap(pixmap)
+
+
+        hbox.addWidget(lbl)
+        self.setLayout(hbox)
+
+        self.btn = QPushButton('Search Place', self)
+        self.btn.setGeometry(80, 75, 100, 50)
+        self.btnInput = QPushButton('Input to DB', self)
+        self.btnInput.setGeometry(80, 140, 100, 50)
+        self.btn.clicked.connect(self.initUI)
+        """self.FirstName = QLineEdit(self)
+        self.FirstName.move(130, 20)
+        self.SecondName = QLineEdit(self)
+        self.SecondName.move(130, 45)
+        if self.btn.clicked:
+            loginF = self.FirstName.text()
+            loginL = self.SecondName.text()
+            uidSql = str(loginF + '.' + loginL)
+            print('uid for sql >', uidSql)
+            self.btn.clicked.connect(self.initUI)"""
+        self.setGeometry(300, 300, 260, 150)
+        self.setWindowTitle('Logining')
+        self.show()
+        #self.btn.clicked.connect()
+        self.center()
+
+    def showDialog(self):
+
+        self.firstName = QInputDialog.getText(self, 'Input login', 'Enter your login')
+
+        if self.firstName:
+            login = str(self.firstName)
+            print(login)
+            #self.FirstName.connect()
 
 
 
@@ -164,5 +220,4 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
     ex = WarehouseInput()
-
     sys.exit(app.exec_())
