@@ -2,8 +2,9 @@ import connectionAEU
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QToolTip,
                              QPushButton, QMessageBox, QDesktopWidget,
-                             QMainWindow, QAction, qApp, QLabel, QLineEdit,
-                             QHBoxLayout, QInputDialog)
+                             QStackedWidget, QAction, qApp, QLabel, QLineEdit,
+                             QHBoxLayout, QInputDialog, QStackedLayout,
+                             QListWidget, QFormLayout)
 
 
 from PyQt5.QtGui import QIcon, QFont, QPixmap, QIntValidator, QRegExpValidator, QKeyEvent
@@ -13,39 +14,66 @@ from PyQt5.QtCore import QCoreApplication, Qt, pyqtSlot
 
 class WarehouseInput (QWidget):
     """ Here we are create GUI for input data to sql """
-
-    def __init__(self):
+    def __init__(self, parent = None):
         """Here we initialize GUI objects"""
-        super().__init__()
+        super(WarehouseInput, self).__init__(parent)
 
-        self.initUI()
+        self.loginingStak = QWidget()
+        self.inputStak = QWidget()
+        self.searchStak = QWidget()
 
-        #self.initUIUser()
+        self.mainLable = QHBoxLayout()
+        self.mainLable.addWidget(self.loginingStak, "Your password SIR")
+        """self.mainLable.addWidget (self.inputStak, 'Input Warehouse Data')
+        self.mainLable.addWidget (self.searchStak, 'Search in DB Warehouse')"""
 
-    def onChanged(self, event):
-        print(event)
+        self.loginingUI()
+        self.inputUI()
+        self.searchUI()
+
+
+        self.Stack = QStackedWidget(self)
+        self.Stack.addWidget(self.loginingStak)
+        self.Stack.addWidget(self.inputStak)
+        self.Stack.addWidget(self.searchStak)
+
+        hbox = QHBoxLayout(self)
+        hbox.addWidget(self.leftlist)
+        hbox.addWidget(self.Stack)
+
+        self.setLayout(hbox)
+        self.leftlist.cur.connect(self.display)
+        self.setGeometry(450, 450, 450, 220)
+        self.setWindowTitle('Temporary Warehouse on Production')
+        self.center()
+        self.show()
+
+    def loginingUI(self):
+
+        layout = QFormLayout()
+        layout.addRow("FirstName", QLineEdit())
+        layout.addRow("SecondNAme", QLineEdit())
+        #layout.addRow("Password", QLineEdit().setInputMask)
+        pixmap = QPixmap("D:\LearnPython\AEU\logining.png")
+        self.lblLogining = QLabel(self)
+        self.lblLogining.setPixmap(pixmap)
+        self.loginingStak.setLayout(layout)
 
 
 
 
-
-
-    def initUI(self):
+    def inputUI(self):
         """Here we initialize interface for enter data """
 
-        #self.setLayout(QHBoxLayout)
+        self.setLayout(QHBoxLayout)
         QToolTip.setFont(QFont('SansSerif', 20))
 
         self.setToolTip('This is a <b>Input data for warehouse</b> widget')
 
-        hbox = QHBoxLayout(self)
         pixmap = QPixmap("D:\LearnPython\AEU\Input.png")
 
-        lbl = QLabel(self)
-        lbl.setPixmap(pixmap)
-
-        hbox.addWidget(lbl)
-        self.setLayout(hbox)
+        self.lblInput = QLabel(self)
+        self.lblInput.setPixmap(pixmap)
 
 
 
@@ -56,13 +84,11 @@ class WarehouseInput (QWidget):
         qbtn.move(400, 410)
 
 
-        self.setGeometry(450, 450, 450, 220)
-        self.setWindowTitle('Temporary Warehouse on Production')
         self.setWindowIcon(QIcon('D:\LearnPython\AEU\scanner.png'))
-        self.center()
+
         self.inputLable()
         #self.exitAPP()
-        self.show()
+
 
     def closeEvent(self, event):
         """Here creat messageBox for close """
@@ -73,6 +99,8 @@ class WarehouseInput (QWidget):
             event.accept()
         else:
             event.ignore()
+
+
 
     def center(self):
         """Here put program to center monitor after launch """
@@ -88,13 +116,10 @@ class WarehouseInput (QWidget):
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(qApp.quit)
 
-
-
         self.setGeometry(300, 300, 300, 200)
         self.setWindowTitle('Menubar')
         self.show()
         self.center()
-
 
     def inputLable(self):
         """Here lable for input data"""
@@ -136,19 +161,6 @@ class WarehouseInput (QWidget):
         self.lblVenBat.move(150, 335)
         self.lblPlace.move(170, 365)
 
-
-
-
-    def enterPress(event):
-        pass
-
-    def writeAeuSql(self):
-        print(self.qleValues)
-        conn = connectionAEU.TakeDataSql()
-        value = self.qleValues
-        conn.inputAeuSql(value)
-
-
     def saveSql(self):
 
         conn = connectionAEU.TakeDataSql()
@@ -177,12 +189,10 @@ class WarehouseInput (QWidget):
         else:
             print('incorect data')
 
+    def searchUI(self):
+        pass
 
-
-
-    def initUIUser(self):
-
-        hbox = QHBoxLayout(self)
+    """   hbox = QHBoxLayout(self)
         pixmap = QPixmap("D:\LearnPython\AEU\logining.png")
 
         lbl = QLabel(self)
@@ -196,16 +206,15 @@ class WarehouseInput (QWidget):
         self.btn.setGeometry(80, 75, 100, 50)
         self.btnInput = QPushButton('Input to DB', self)
         self.btnInput.setGeometry(80, 140, 100, 50)
-        self.btn.clicked.connect(self.initUI)
+        self.btn.clicked.connect(self.inputUI)
 
         self.setGeometry(300, 300, 260, 150)
         self.setWindowTitle('Logining')
         self.show()
         #self.btn.clicked.connect()
         self.center()
-        """ def changeFocus(self):
-
-        self.qleMatNum.setFocus(self.qleVenBat)"""
+        
+        """
 
     def changeFocustoVen(self):
 
@@ -215,26 +224,15 @@ class WarehouseInput (QWidget):
 
         self.qlePlace.setFocus()
 
+    def display(self, i):
 
+        self.Stack.setCurrentIndex(i)
 
-    def showDialog(self):
-
-        self.firstName = QInputDialog.getText(self, 'Input login', 'Enter your login')
-
-        if self.firstName:
-            login = str(self.firstName)
-            print(login)
-            #self.FirstName.connect()
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
-
+def main():
     app = QApplication(sys.argv)
     ex = WarehouseInput()
     sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
+
