@@ -18,10 +18,12 @@ class WarehouseInput (QWidget):
         """Here we initialize GUI objects"""
         super().__init__()
 
-        #self.initUI()
+        self.initUI()
 
-        self.initUIUser()
+        #self.initUIUser()
 
+    def onChanged(self, event):
+        print(event)
 
 
 
@@ -30,6 +32,8 @@ class WarehouseInput (QWidget):
 
     def initUI(self):
         """Here we initialize interface for enter data """
+
+        #self.setLayout(QHBoxLayout)
         QToolTip.setFont(QFont('SansSerif', 20))
 
         self.setToolTip('This is a <b>Input data for warehouse</b> widget')
@@ -84,21 +88,16 @@ class WarehouseInput (QWidget):
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(qApp.quit)
 
-        self.statusBar()
 
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(exitAction)
 
         self.setGeometry(300, 300, 300, 200)
         self.setWindowTitle('Menubar')
         self.show()
+        self.center()
+
 
     def inputLable(self):
         """Here lable for input data"""
-
-        self.qleValues = []
-
         self.lblMatNum = QLabel(self)
         self.lblVenBat = QLabel(self)
         self.lblPlace = QLabel(self)
@@ -110,38 +109,28 @@ class WarehouseInput (QWidget):
         self.lblPlace.setText('Place>')
         self.lblPlace.setFont(QFont("Arial", 11))
 
-        qleMatNum = QLineEdit(self)
-        qleMatNum.setValidator(QIntValidator())
-        qleMatNum.setMaxLength(9)
-        qleMatNum.move(215, 305)
-        #ent = qleMatNum.keyPressEvent(QKeyEvent.Enter)
-        if qleMatNum.maxLength() == 8:
-            qleMatNum.text()
-            self.qleValues.append(qleMatNum)
-            qleMatNum.setFocus(self.qleVenBat, QKeyEvent.Enter)
-        else:
-            print('Incorect input', qleMatNum)
-        """if qleMatNum.editingFinished(ent):
-            self.qleValues.append(qleMatNum)"""
-
+        self.qleMatNum = QLineEdit(self)
+        self.qleMatNum.setValidator(QIntValidator())
+        self.qleMatNum.setMaxLength(8)
+        self.qleMatNum.move(215, 305)
+        self.qleMatNum.setFocus()
+        self.qleMatNum.returnPressed.connect(self.changeFocustoVen)
 
         self.qleVenBat = QLineEdit(self)
         self.qleVenBat.setValidator(QIntValidator())
-        self.qleVenBat.setMaxLength(11)
-        """if qleVenBat.keyPressEvent(QKeyEvent.Enter):
-            qleVenBat.text()
-            self.qleValues.append(qleVenBat)"""
+        self.qleVenBat.setMaxLength(10)
+        self.qleVenBat.returnPressed.connect(self.changeFocustoPlasce)
 
-
-        qlePlace = QLineEdit(self)
+        self.qlePlace = QLineEdit(self)
         #qlePlace.setValidator(QRegExpValidator('W'))
-        qlePlace.setMaxLength(10)
-        qlePlace.setInputMask('w9e-99-99')
-        qlePlace.setFont(QFont("Arial", 14))
+        self.qlePlace.setMaxLength(9)
+        self.qlePlace.setInputMask('w9e-99-99')
+        self.qlePlace.setFont(QFont("Arial", 14))
+        self.qlePlace.returnPressed.connect(self.saveSql)
 
-        qleMatNum.move(215, 305)
+        self.qleMatNum.move(215, 305)
         self.qleVenBat.move(215, 335)
-        qlePlace.move(215, 365)
+        self.qlePlace.move(215, 365)
 
         self.lblMatNum.move(140, 305)
         self.lblVenBat.move(150, 335)
@@ -150,22 +139,46 @@ class WarehouseInput (QWidget):
 
 
 
-        qP = qlePlace.text()
-        self.qleValues.append(qlePlace)
-
-        return self.qleValues
-        a = WarehouseInput.writeAeuSql()
-
-
-
-    def enterPressFocus(event):
-        event.focusNextChild()
+    def enterPress(event):
+        pass
 
     def writeAeuSql(self):
         print(self.qleValues)
         conn = connectionAEU.TakeDataSql()
         value = self.qleValues
         conn.inputAeuSql(value)
+
+
+    def saveSql(self):
+
+        conn = connectionAEU.TakeDataSql()
+
+        self.qleValues = []
+
+        textMatNum = self.qleMatNum.text()
+        textVenBat = self.qleVenBat.text()
+        textPlace = self.qlePlace.text()
+
+        print(textMatNum, textVenBat, textPlace)
+
+        self.qleValues.append(textMatNum)
+        self.qleValues.append(textVenBat)
+        self.qleValues.append(textPlace)
+
+        print(self.qleValues)
+
+
+        if len(self.qleValues) != 0:
+            conn.inputAeuSql(self.qleValues)
+            self.qleMatNum.clear()
+            self.qleVenBat.clear()
+            self.qlePlace.clear()
+            self.qleMatNum.setFocus()
+        else:
+            print('incorect data')
+
+
+
 
     def initUIUser(self):
 
@@ -184,21 +197,25 @@ class WarehouseInput (QWidget):
         self.btnInput = QPushButton('Input to DB', self)
         self.btnInput.setGeometry(80, 140, 100, 50)
         self.btn.clicked.connect(self.initUI)
-        """self.FirstName = QLineEdit(self)
-        self.FirstName.move(130, 20)
-        self.SecondName = QLineEdit(self)
-        self.SecondName.move(130, 45)
-        if self.btn.clicked:
-            loginF = self.FirstName.text()
-            loginL = self.SecondName.text()
-            uidSql = str(loginF + '.' + loginL)
-            print('uid for sql >', uidSql)
-            self.btn.clicked.connect(self.initUI)"""
+
         self.setGeometry(300, 300, 260, 150)
         self.setWindowTitle('Logining')
         self.show()
         #self.btn.clicked.connect()
         self.center()
+        """ def changeFocus(self):
+
+        self.qleMatNum.setFocus(self.qleVenBat)"""
+
+    def changeFocustoVen(self):
+
+        self.qleVenBat.setFocus()
+
+    def changeFocustoPlasce(self):
+
+        self.qlePlace.setFocus()
+
+
 
     def showDialog(self):
 
