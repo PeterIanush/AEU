@@ -23,9 +23,9 @@ class WarehouseInput (QWidget):
         self.searchStak = QWidget()
 
         self.mainLable = QHBoxLayout()
-        self.mainLable.addWidget(self.loginingStak, "Your password SIR")
-        """self.mainLable.addWidget (self.inputStak, 'Input Warehouse Data')
-        self.mainLable.addWidget (self.searchStak, 'Search in DB Warehouse')"""
+        self.mainLable.addWidget(self.loginingStak)
+        self.mainLable.addWidget (self.inputStak)
+        self.mainLable.addWidget (self.searchStak)
 
         self.loginingUI()
         self.inputUI()
@@ -38,11 +38,10 @@ class WarehouseInput (QWidget):
         self.Stack.addWidget(self.searchStak)
 
         hbox = QHBoxLayout(self)
-        hbox.addWidget(self.leftlist)
+        #hbox.addWidget(self.leftlist)
         hbox.addWidget(self.Stack)
 
         self.setLayout(hbox)
-        self.leftlist.cur.connect(self.display)
         self.setGeometry(450, 450, 450, 220)
         self.setWindowTitle('Temporary Warehouse on Production')
         self.center()
@@ -50,14 +49,17 @@ class WarehouseInput (QWidget):
 
     def loginingUI(self):
 
-        layout = QFormLayout()
-        layout.addRow("FirstName", QLineEdit())
-        layout.addRow("SecondNAme", QLineEdit())
-        #layout.addRow("Password", QLineEdit().setInputMask)
+        layout = QHBoxLayout()
+        layout.addWidget(QLineEdit("FirstName"))
+        layout.addWidget(QLineEdit("SecondNAme"))
+        #layout.addRow("Password", QLineEdit.setInputMask())
         pixmap = QPixmap("D:\LearnPython\AEU\logining.png")
+        pixmap.devicePixelRatio()
         self.lblLogining = QLabel(self)
         self.lblLogining.setPixmap(pixmap)
         self.loginingStak.setLayout(layout)
+        self.setWindowTitle('Logining')
+        self.btnOk = QPushButton('OK')
 
 
 
@@ -65,7 +67,7 @@ class WarehouseInput (QWidget):
     def inputUI(self):
         """Here we initialize interface for enter data """
 
-        self.setLayout(QHBoxLayout)
+        #self.setLayout(QFormLayout)
         QToolTip.setFont(QFont('SansSerif', 20))
 
         self.setToolTip('This is a <b>Input data for warehouse</b> widget')
@@ -225,7 +227,6 @@ class WarehouseInput (QWidget):
         self.qlePlace.setFocus()
 
     def display(self, i):
-
         self.Stack.setCurrentIndex(i)
 
 def main():
