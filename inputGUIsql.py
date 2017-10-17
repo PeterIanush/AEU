@@ -17,7 +17,7 @@ class WarehouseInput (QWidget):
     def __init__(self, parent = None):
         """Here we initialize GUI objects"""
         super(WarehouseInput, self).__init__(parent)
-
+        #self.resize(300, 300)
         self.loginingStak = QWidget()
         self.inputStak = QWidget()
         self.searchStak = QWidget()
@@ -49,17 +49,47 @@ class WarehouseInput (QWidget):
 
     def loginingUI(self):
 
-        layout = QHBoxLayout()
-        layout.addWidget(QLineEdit("FirstName"))
-        layout.addWidget(QLineEdit("SecondNAme"))
-        #layout.addRow("Password", QLineEdit.setInputMask())
-        pixmap = QPixmap("D:\LearnPython\AEU\logining.png")
+        layout = QFormLayout()
+        connAEU = connectionAEU.TakeDataSql()
+
+        layout.addWidget(QLabel("Login->"))
+        login = QLineEdit()
+        layout.addWidget(login)
+
+        layout.addWidget(QLabel("Password->"))
+        password = QLineEdit()
+
+        layout.addWidget(password)
+
+        self.textLogin = login.text()
+
+        self.textPassword = password.text()
+
+        pixmap = QPixmap("D:\LearnPython\AEU\password.pgn")
         pixmap.devicePixelRatio()
+
         self.lblLogining = QLabel(self)
         self.lblLogining.setPixmap(pixmap)
         self.loginingStak.setLayout(layout)
-        self.setWindowTitle('Logining')
-        self.btnOk = QPushButton('OK')
+
+        self.btnOk = QPushButton('Login')
+        layout.addWidget(self.btnOk)
+        self.btnOk.clicked.connect(connAEU.readAeuSql)
+        self.show()
+
+    def showDialog(self):
+
+        login = self.textLogin
+        con = connectionAEU.TakeDataSql()
+        con.readAeuSql(login)
+
+
+        loginSql = con.readAeuSql()
+        if (login == )
+
+
+
+
 
 
 
@@ -76,8 +106,6 @@ class WarehouseInput (QWidget):
 
         self.lblInput = QLabel(self)
         self.lblInput.setPixmap(pixmap)
-
-
 
         qbtn = QPushButton('Quit', self)
         qbtn.clicked.connect(QCoreApplication.instance().quit)

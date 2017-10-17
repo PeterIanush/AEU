@@ -1,31 +1,53 @@
 import sys
 from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+from PyQt5 import QtGui
 from  PyQt5.QtWidgets import *
 from PyQt5.Qt import *
-class loginGUI(QWidget):
+class loginGUI(QtGui.QMainWindow):
 
-    def __init__(self, name='', message='', widget=None, parent=None):
-        QWidget.__init__(self, parent)
+    def __init__(self):
+        QtGui.QMainWindow.__init__(self)
+        self.resize(300, 300)
 
-        self.setQbjectName(name)
-        self.WindowTitle(name)
+        self.addTool()
+        self.Centr = QtGui.QWidget()
+        self.setCentralWidget(self.Centr)
 
-        # the dafault label
-        self.lbl = QLabel(message)
-        self.lbl.setAlignment(Qt.AlignCenter)
+        self.stack = QtGui.QStackedLayout(self.Centr)  # Создать экземпляр класса QStackedLayout
+        self.stack.addWidget(self.addWindowOne())  # добавить компонент в конец контейнера
+        self.stack.addWidget(self.addWindowTwo())
+        self.currentStack(0)  # делает видимым компонент с указанным индексом
 
-        #the stack holding the label and setting page
-        self.stak = QStackedWidget()
-        self.stak.addWidget(self.lbl)
+    def addTool(self):
+        """ создаём панель инструментов"""
 
-        #the scroller holding thr stak
-        self.scroller =QScrollArea()
-        self.scroller.setWidget(self.stak)
-        self.scroller.setWidgetResizable(True)
+        self.toolbar = self.addToolBar('windows')
+        nameAct = ['window 1', 'window 2']
+        for index, name in enumerate(nameAct):
+            name = QtGui.QAction(name, self)
+            self.connect(name, QtCore.SIGNAL('triggered()'), self.switchWindow(index))
+            self.toolbar.addAction(name)
 
-        #add the scroller
-        self.setWidget(self.scroller)
+    def addWindowOne(self):
+        wind = QtGui.QWidget()
+        wind.setStyleSheet('background-color: {0};'.format('#A2D9EE'))
+        return wind
 
-        if widget:
-            self.placeWidget(widget)
+    def addWindowTwo(self, ):
+        wind = QtGui.QWidget()
+        wind.setStyleSheet('background-color: {0};'.format('#A2EECE'))
+        return wind
+
+    def currentStack(self, current_id):
+        self.stack.setCurrentIndex(current_id)
+
+    def switchWindow(self, index):
+        def f():
+            self.currentStack(index)
+
+        return f
+
+    app = QtGui.QApplication(sys.argv)
+    main = MainWindow()
+    main.show()
+    sys.exit(app.exec_())

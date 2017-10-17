@@ -32,12 +32,27 @@ class TakeDataSql ():
         readconn.close()
 
 
-    def readAeuSql(self):
+    def readAeuSql(self, login):
         """ This funtion for reading data from table CableWarehouse"""
-        Vll = ['a', 'b', 'c']
-        self.conn = TakeDataSql.inputAeuSql(ValueInterf=Vll)
 
-        pass
+        readconn = self.connectionAeu
+        cursor = self.cursor
+        selectSQLcommand = ("SELECT * FROM LoginPassWareH WHERE (Login = 'login'), Password")
+
+        try:
+            # Execute the SQL command
+            cursor.execute(selectSQLcommand)
+            results = cursor.fetchall()
+            for row in results:
+                self.logName = row[0]
+                self.pasName = row[1]
+            print("logName=%s, pasName=%s" % (self.logName, self.pasName))
+        except:
+            print("Incorect password")
+
+        readconn.close()
+
+
 
 
 
