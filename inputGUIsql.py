@@ -1,5 +1,6 @@
 import connectionAEU
 import sys
+import os
 from PyQt5.QtWidgets import (QApplication, QWidget, QToolTip,
                              QPushButton, QMessageBox, QDesktopWidget,
                              QStackedWidget, QAction, qApp, QLabel, QLineEdit,
@@ -16,11 +17,18 @@ class WarehouseInput (QWidget):
     """ Here we are create GUI for input data to sql """
     def __init__(self, parent = None):
         """Here we initialize GUI objects"""
-        super(WarehouseInput, self).__init__(parent)
+        super(WarehouseInput, self).__init__()
         #self.resize(300, 300)
+
+
         self.loginingStak = QWidget()
         self.inputStak = QWidget()
         self.searchStak = QWidget()
+
+        self.Stack = QStackedWidget(self)
+        self.Stack.addWidget(self.loginingStak)
+        self.Stack.addWidget(self.inputStak)
+        self.Stack.addWidget(self.searchStak)
 
         self.mainLable = QHBoxLayout()
         self.mainLable.addWidget(self.loginingStak)
@@ -32,10 +40,7 @@ class WarehouseInput (QWidget):
         self.searchUI()
 
 
-        self.Stack = QStackedWidget(self)
-        self.Stack.addWidget(self.loginingStak)
-        self.Stack.addWidget(self.inputStak)
-        self.Stack.addWidget(self.searchStak)
+
 
         hbox = QHBoxLayout(self)
         #hbox.addWidget(self.leftlist)
@@ -58,7 +63,8 @@ class WarehouseInput (QWidget):
 
         layout.addWidget(QLabel("Password->"))
         password = QLineEdit()
-
+        password.setEchoMode(QLineEdit.Password)
+        password.returnPressed.connect(self.changeFocusBtn)
         layout.addWidget(password)
 
         self.textLogin = login.text()
@@ -74,29 +80,29 @@ class WarehouseInput (QWidget):
 
         self.btnOk = QPushButton('Login')
         layout.addWidget(self.btnOk)
-        self.btnOk.clicked.connect(connAEU.readAeuSql)
+        self.btnOk.clicked.connect(self.showDialog)
+
         self.show()
+
+
+
 
     def showDialog(self):
 
         login = self.textLogin
         con = connectionAEU.TakeDataSql()
-        con.readAeuSql(login)
 
-
-        loginSql = con.readAeuSql()
-        if (login == )
-
-
-
-
-
-
+        loginSql = con.readAeuSql(login)
+        msgBox = QMessageBox()
+        msgBox.setText(str(loginSql))
+        msgBox.information(0, "Informatio", "%s" % loginSql)
+        msgBox.clickedButton.connect(self.inputUI)
+        msgBox.exec()
 
 
     def inputUI(self):
         """Here we initialize interface for enter data """
-
+        layout = QFormLayout()
         #self.setLayout(QFormLayout)
         QToolTip.setFont(QFont('SansSerif', 20))
 
@@ -117,6 +123,7 @@ class WarehouseInput (QWidget):
         self.setWindowIcon(QIcon('D:\LearnPython\AEU\scanner.png'))
 
         self.inputLable()
+        self.inputStak(layout)
         #self.exitAPP()
 
 
@@ -201,6 +208,10 @@ class WarehouseInput (QWidget):
         textVenBat = self.qleVenBat.text()
         textPlace = self.qlePlace.text()
 
+        verifyValue = conn.verifySql(textMatNum)
+
+        print(verifyValue)
+
         print(textMatNum, textVenBat, textPlace)
 
         self.qleValues.append(textMatNum)
@@ -218,6 +229,8 @@ class WarehouseInput (QWidget):
             self.qleMatNum.setFocus()
         else:
             print('incorect data')
+
+
 
     def searchUI(self):
         pass
@@ -253,6 +266,10 @@ class WarehouseInput (QWidget):
     def changeFocustoPlasce(self):
 
         self.qlePlace.setFocus()
+
+    def changeFocusBtn(self):
+
+        self.btnOk.setFocus()
 
     def display(self, i):
         self.Stack.setCurrentIndex(i)

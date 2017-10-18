@@ -1,53 +1,41 @@
-import sys
-from PyQt5.QtCore import *
-from PyQt5 import QtGui
-from  PyQt5.QtWidgets import *
-from PyQt5.Qt import *
-class loginGUI(QtGui.QMainWindow):
+from PyQt5 import QtCore, QtGui, Qt
 
-    def __init__(self):
-        QtGui.QMainWindow.__init__(self)
-        self.resize(300, 300)
+class MainWindow(Qt.QMainWindow):
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+        self.central_widget = Qt.QStackedWidget()
+        self.setCentralWidget(self.central_widget)
+        login_widget = LoginWidget(self)
+        login_widget.button.clicked.connect(self.login)
+        self.central_widget.addWidget(login_widget)
+    def login(self):
+        logged_in_widget = LoggedWidget(self)
+        self.central_widget.addWidget(logged_in_widget)
+        self.central_widget.setCurrentWidget(logged_in_widget)
 
-        self.addTool()
-        self.Centr = QtGui.QWidget()
-        self.setCentralWidget(self.Centr)
 
-        self.stack = QtGui.QStackedLayout(self.Centr)  # Создать экземпляр класса QStackedLayout
-        self.stack.addWidget(self.addWindowOne())  # добавить компонент в конец контейнера
-        self.stack.addWidget(self.addWindowTwo())
-        self.currentStack(0)  # делает видимым компонент с указанным индексом
+class LoginWidget(Qt.QWidget):
+    def __init__(self, parent=None):
+        super(LoginWidget, self).__init__(parent)
+        layout = Qt.QHBoxLayout()
+        self.button = Qt.QPushButton('Login')
+        layout.addWidget(self.button)
+        self.setLayout(layout)
+        # you might want to do self.button.click.connect(self.parent().login) here
 
-    def addTool(self):
-        """ создаём панель инструментов"""
 
-        self.toolbar = self.addToolBar('windows')
-        nameAct = ['window 1', 'window 2']
-        for index, name in enumerate(nameAct):
-            name = QtGui.QAction(name, self)
-            self.connect(name, QtCore.SIGNAL('triggered()'), self.switchWindow(index))
-            self.toolbar.addAction(name)
+class LoggedWidget(Qt.QWidget):
+    def __init__(self, parent=None):
+        super(LoggedWidget, self).__init__(parent)
+        layout = Qt.QHBoxLayout()
+        self.label = Qt.QLabel('logged in!')
+        layout.addWidget(self.label)
+        self.setLayout(layout)
 
-    def addWindowOne(self):
-        wind = QtGui.QWidget()
-        wind.setStyleSheet('background-color: {0};'.format('#A2D9EE'))
-        return wind
 
-    def addWindowTwo(self, ):
-        wind = QtGui.QWidget()
-        wind.setStyleSheet('background-color: {0};'.format('#A2EECE'))
-        return wind
 
-    def currentStack(self, current_id):
-        self.stack.setCurrentIndex(current_id)
-
-    def switchWindow(self, index):
-        def f():
-            self.currentStack(index)
-
-        return f
-
-    app = QtGui.QApplication(sys.argv)
-    main = MainWindow()
-    main.show()
-    sys.exit(app.exec_())
+if __name__ == '__main__':
+    app = Qt.QApplication([])
+    window = MainWindow()
+    window.show()
+    app.exec_()
