@@ -1,20 +1,29 @@
 import pyodbc
-import inputGUIsql
+import WareHouseAEU
 
 class TakeDataSql ():
     """This class TakeDataSql working with data on sql, for warehaouse"""
 
 
-    def __init__(self):
+    def __init__(self, uidSql, passSql):
         """ This function for connection to db aeu on server UACVDB01\SQL2008EXPRESS"""
-        self.connectionAeu = pyodbc.connect('Driver={SQL Server};'
+        self.mainW = WareHouseAEU.MainButton()
+        try:
+         self.connectionAeu = pyodbc.connect('Driver={SQL Server};'
                                        'Server=UACVDB01\SQL2008EXPRESS;'
                                        'Database=aeu;'
-                                       'uid=sa;pwd=Prettl!@#4')
-        self.cursor = self.connectionAeu.cursor()
+                                       'uid=%s;pwd=%s' % uidSql, passSql)
+
+        except pyodbc.Error:
+            self.error = WareHouseAEU.ErrorLoginWidget()
+        finally:
+            self.cursor = self.connectionAeu.cursor()
+
+            self.MainButton.connect(self.mainW)
 
 
-    def inputAeuSql(self, ValueInterf):
+
+    def Save(self, ValueInterf):
         """ This funtion for input data to table CableWarehouse """
 
         readconn = self.connectionAeu
@@ -28,7 +37,7 @@ class TakeDataSql ():
         readconn.close()
 
 
-    def readAeuSql(self, login):
+    def SelectPassword(self, login, password):
         """ This funtion for reading data from table CableWarehouse"""
 
         readconn = self.connectionAeu
@@ -46,10 +55,9 @@ class TakeDataSql ():
         else:
             print("Incorect password")
 
-
         readconn.close()
 
-    def verifySql(self, valueVerifySql):
+    def VerifyMaterial(self, valueVerifySql):
 
         readconn = self.connectionAeu
         cursor =self.cursor

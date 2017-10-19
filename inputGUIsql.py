@@ -55,7 +55,7 @@ class WarehouseInput (QWidget):
     def loginingUI(self):
 
         layout = QFormLayout()
-        connAEU = connectionAEU.TakeDataSql()
+        #connAEU = connectionAEU.TakeDataSql()
 
         layout.addWidget(QLabel("Login->"))
         login = QLineEdit()
@@ -92,7 +92,7 @@ class WarehouseInput (QWidget):
         login = self.textLogin
         con = connectionAEU.TakeDataSql()
 
-        loginSql = con.readAeuSql(login)
+        loginSql = con.SelectPassword(login)
         msgBox = QMessageBox()
         msgBox.setText(str(loginSql))
         msgBox.information(0, "Informatio", "%s" % loginSql)
@@ -123,7 +123,7 @@ class WarehouseInput (QWidget):
         self.setWindowIcon(QIcon('D:\LearnPython\AEU\scanner.png'))
 
         self.inputLable()
-        self.inputStak(layout)
+        #self.inputStak(layout)
         #self.exitAPP()
 
 
@@ -208,7 +208,7 @@ class WarehouseInput (QWidget):
         textVenBat = self.qleVenBat.text()
         textPlace = self.qlePlace.text()
 
-        verifyValue = conn.verifySql(textMatNum)
+        verifyValue = conn.VerifyMaterial(textMatNum)
 
         print(verifyValue)
 
@@ -222,7 +222,7 @@ class WarehouseInput (QWidget):
 
 
         if len(self.qleValues) != 0:
-            conn.inputAeuSql(self.qleValues)
+            conn.Save(self.qleValues)
             self.qleMatNum.clear()
             self.qleVenBat.clear()
             self.qlePlace.clear()
