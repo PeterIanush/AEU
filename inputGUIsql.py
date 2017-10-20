@@ -103,6 +103,7 @@ class WarehouseInput (QWidget):
     def inputUI(self):
         """Here we initialize interface for enter data """
         layout = QFormLayout()
+
         #self.setLayout(QFormLayout)
         QToolTip.setFont(QFont('SansSerif', 20))
 
