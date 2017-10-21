@@ -9,6 +9,7 @@ class TakeDataSql ():
     def __init__(self, uidSql, passSql):
         """ This function for connection to db aeu on server UACVDB01\SQL2008EXPRESS"""
 
+
         print(uidSql, passSql)
 
         try:
@@ -21,9 +22,12 @@ class TakeDataSql ():
             self.cursor = self.connectionAeu.cursor()
 
             print('OK')
-            #self.mnBtn = WareHouseAEU.WarehouseMain.UIinit(self)
+            self.status = 1
+            self.valueDescr = (uidSql+"."+passSql)
+            print(self.valueDescr)
         except pyodbc.Error:
             print('Galyak')
+            self.status = 2
 
 
 
@@ -32,22 +36,35 @@ class TakeDataSql ():
     def Save(self, ValueInterf):
         """ This funtion for input data to table CableWarehouse """
 
+        print(ValueInterf)
+
         readconn = self.connectionAeu
+
         cursor = self.cursor
-        insertSQLcommand = ("INSERT INTO CableWarehouse "
-                                              "(MaterialNumber, VendorBatch, PlaceNumber)"
-                                              "VALUES (?,?,?)")
+        print("List - >", ValueInterf)
+        material = ValueInterf[0]
+        identifier = ValueInterf[1]
+        deliveryNumber = ValueInterf[2]
+        place = ValueInterf[4]
+        curDate = ValueInterf[5]
+        state = ValueInterf[6]
+        cursor.execute("INSERT INTO CableWarehouse "
+                                    "(material, identificator, venfor_batch, place, state, date_and_time, description)"
+                                    "VALUES ('%s','%s','%s','%s', '%s','%s')" % (material,identifier,deliveryNumber,place,state,curDate))
 
-        cursor.execute(insertSQLcommand, ValueInterf)
+
+        print('Try to save')
         readconn.commit()
-        readconn.close()
 
 
-    def SelectPassword(self, login, password):
+
+    def SelectPassword(self, login):
         """ This funtion for reading data from table CableWarehouse"""
 
         readconn = self.connectionAeu
+        print('Try to save')
         cursor = self.cursor
+
         selectSQLcommand = ("SELECT Login,Password FROM LoginPassWareH WHERE Login='%s'" % login)
         print(selectSQLcommand)
         cursor.execute(selectSQLcommand)
@@ -61,14 +78,15 @@ class TakeDataSql ():
         else:
             print("Incorect password")
 
-        readconn.close()
+
+
 
     def VerifyMaterial(self, valueVerifySql):
 
         readconn = self.connectionAeu
         cursor =self.cursor
-        selectVerifySql = ("SELECT [MaterialNumber], [VendorBatch], [PlaceNumber] \
-                              FROM [aeu].[dbo].[CableWarehouse] WHERE [MaterialNumber] = '%s'" % valueVerifySql)
+        selectVerifySql = ("SELECT [material], [vendor_batch], [place] \
+                              FROM [aeu].[dbo].[CableWarehouse] WHERE [material] = '%s'" % valueVerifySql)
         cursor.execute(selectVerifySql)
         print(cursor.execute(selectVerifySql))
         results = cursor.fetchall()
@@ -76,8 +94,8 @@ class TakeDataSql ():
             self.matNum = raw[0]
             self.vendBunch = raw[1]
             self.place = raw[2]
-            print("Material Number - > %s, Vendor Bunch - > %s, Place - > %s" % (self.matNum, self.vendBunch, self.place))
-        readconn.close()
+            print("Material Number- > %s, Vendor Bunch- > %s, Place- > %s" % (self.matNum, self.vendBunch, self.place))
+
 
 
 

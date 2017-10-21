@@ -33,14 +33,15 @@ class WarehouseMain(QMainWindow):
         super(WarehouseMain, self).__init__(parent)
         self.centralWidget = QStackedWidget()
         self.setCentralWidget(self.centralWidget)
-        loginWidget = LoginWidget(self)
-        loginWidget.button.clicked.connect(self.UIinit)
+        self.loginWidget = LoginWidget(self)
+        self.loginWidget.button.clicked.connect(self.UIinit)
         self.setWindowIcon(QIcon('D:\LearnPython\AEU\scanner.png'))
+        #stateLable = QLabel("_           __", self)
+        #self.stateLable.move(510, 240)
 
+        self.centralWidget.addWidget(self.loginWidget)
 
-
-        self.centralWidget.addWidget(loginWidget)
-        self.setGeometry(300, 300, 420, 200)
+        self.setGeometry(300, 300, 848, 280)
         self.show()
 
     def UIinit(self):
@@ -48,23 +49,32 @@ class WarehouseMain(QMainWindow):
         self.mainbtn = MainButton(self)
         self.centralWidget.addWidget(self.mainbtn)
         self.centralWidget.setCurrentWidget(self.mainbtn)
+
         self.mainbtn.btnInitUI.clicked.connect(self.UIinput)
         self.mainbtn.btnSearchUI.clicked.connect(self.UIsearch)
 
+        self.logi = self.loginWidget.login.text()
+        print(self.logi)
+        self.pas = self.loginWidget.password.text()
+        print(self.pas)
+        self.con = connectionAEU.TakeDataSql(self.logi, self.pas)
+
+
+
+    def connectedLWidget(self):
+
+        self.okLable = self.stateLable.setText("connected")
 
     def erroLWidget(self):
-        self.eLWidget = ErrorLoginWidget(self)
-        self.centralWinget.addWidget(self.eLWidget)
-        self.centralWinget.setCurrentWidget(self.eLWidget)
+
+        self.erroLable = self.stateLable.setText("Try Again")
+
 
     def UIinput(self):
         self.inpbtn = inputUI(self)
         self.centralWidget.addWidget(self.inpbtn)
         self.centralWidget.setCurrentWidget(self.inpbtn)
-        self.inpbtn.qlePlace.returnPressed.connect(self.DBhelper)
-
-    def DBhelper(self):
-        self.dbhelper = MsSqlValidator(self)
+        #self.inpbtn.qlePlace.returnPressed.connect(self.dbHelper)
 
 
     def UIsearch(self):
@@ -128,7 +138,7 @@ class LoginWidget(QWidget):
         layout.addWidget(self.button)
         layout.addWidget(self.lblLogining)
         self.button.setFont(QFont("Arial", 14))
-        self.button.clicked.connect(self.validAccess)
+
 
         pixmap = QPixmap("D:\LearnPython\AEU\impg7.jpg")
         self.lblInput = QLabel(self)
@@ -138,10 +148,19 @@ class LoginWidget(QWidget):
         self.setGeometry(10, 10, 400, 200)
         self.setLayout(layout)
 
-    def validAccess(self):
+    """def validAccess(self):
+
         loginValid = self.login.text()
         paswordValid = self.password.text()
-        self.conn = connectionAEU.TakeDataSql(loginValid, paswordValid)
+        self.connLogin = connectionAEU.TakeDataSql(loginValid, paswordValid)
+        if self.connLogin.status == 1:
+            self.state = QLabel("__   __", self)
+            self.state.setFont(QFont("Arial", 20))
+            self.state.stateLable.setText("connected")
+        else:
+            self.state.stateLable.setText("Try Again")
+        """
+
 
 
 
@@ -213,36 +232,48 @@ class inputUI(QWidget):
         qbtn.clicked.connect(QCoreApplication.instance().quit)
         qbtn.setToolTip('This is a <b>QuitButton</b>')
         qbtn.resize(qbtn.sizeHint())
-        qbtn.move(330, 170)
+        qbtn.move(610, 240)
 
         #self.setWindowIcon(QIcon('D:\LearnPython\AEU\scanner.png'))
-        self.setGeometry(100, 100, 400, 200)
+        self.setGeometry(200, 200, 400, 200)
         self.inputLable()
         self.setLayout(layout)
 
     def inputLable(self):
         #Here lable for input data
         self.lblMatNum = QLabel(self)
+        self.lblident = QLabel(self)
         self.lblVenBat = QLabel(self)
         self.lblPlace = QLabel(self)
 
         self.lblMatNum.setText('MatNum >')
         self.lblMatNum.setFont(QFont("Arial", 12))
+        self.lblident.setText('Identificator >')
+        self.lblident.setFont(QFont("Arial", 12))
         self.lblVenBat.setText('VenBat >')
         self.lblVenBat.setFont(QFont("Arial", 12))
         self.lblPlace.setText('Place>')
         self.lblPlace.setFont(QFont("Arial", 12))
 
+
         self.qleMatNum = QLineEdit(self)
         self.qleMatNum.setValidator(QIntValidator())
         self.qleMatNum.setMaxLength(8)
-        #self.qleMatNum.move(215, 305)
+        self.qleMatNum.setFont(QFont("Arial", 14))
         self.qleMatNum.setFocus()
-        self.qleMatNum.returnPressed.connect(self.changeFocustoVen)
+        self.qleMatNum.returnPressed.connect(self.changeFocustoIdent)
+
+        self.qleIdent = QLineEdit(self)
+        self.qleIdent.setValidator(QIntValidator())
+        self.qleIdent.setMaxLength(8)
+        self.qleIdent.setFont(QFont("Arial", 14))
+        self.qleIdent.setFocus()
+        self.qleIdent.returnPressed.connect(self.changeFocustoVen)
 
         self.qleVenBat = QLineEdit(self)
         self.qleVenBat.setValidator(QIntValidator())
         self.qleVenBat.setMaxLength(10)
+        self.qleVenBat.setFont(QFont("Arial", 14))
         self.qleVenBat.returnPressed.connect(self.changeFocustoPlasce)
 
         self.qlePlace = QLineEdit(self)
@@ -252,14 +283,59 @@ class inputUI(QWidget):
         self.qlePlace.setFont(QFont("Arial", 14))
         self.qlePlace.returnPressed.connect(self.MsSqlValidator)
 
-        self.qleMatNum.move(165,35)
+        self.qleMatNum.move(165,15)
+        self.qleIdent.move(165, 45)
         self.qleVenBat.move(165, 75)
-        self.qlePlace.move(165, 125)
+        self.qlePlace.move(165, 105)
 
-        self.lblMatNum.move(95, 35)
+        self.lblMatNum.move(95, 15)
+        self.lblident.move(75, 45)
         self.lblVenBat.move(100, 75)
-        self.lblPlace.move(115, 125)
-        self.setGeometry(100, 100, 400, 200)
+        self.lblPlace.move(115, 105)
+        self.setGeometry(300, 300, 500, 280)
+
+    def MsSqlValidator(self):
+
+        loginS = LoginWidget()
+        logi = loginS.login.text()
+        pas = loginS.password.text()
+
+        self.qleValues = []
+
+        self.textMatNum = self.qleMatNum.text()
+        textVenBat = self.qleVenBat.text()
+        textPlace = self.qlePlace.text()
+        textIdent = self.qleIdent.text()
+        self.qleValues.append(self.textMatNum)
+        self.qleValues.append(textIdent)
+        self.qleValues.append(textVenBat)
+        self.qleValues.append(textPlace)
+        status = 'wait'
+        datus = 'DAFAULT'
+        destript = (pas+"."+logi)
+        self.qleValues.append(status)
+        self.qleValues.append(datus)
+        self.qleValues.append(destript)
+
+
+        lo = '123'
+        conS = connectionAEU.TakeDataSql(logi, pas).Save(self.qleValues)
+        print(self.qleValues)
+        #self.connI = connectionAEU.TakeDataSql()
+        #self.verifyValue = self.conn.VerifyMaterial(textMatNum)
+
+        if len(self.qleValues) != 0:
+            self.qleMatNum.clear()
+            self.qleIdent.clear()
+            self.qleVenBat.clear()
+            self.qlePlace.clear()
+            self.qleMatNum.setFocus()
+        else:
+            print('incorect data')
+
+    def changeFocustoIdent(self):
+
+        self.qleIdent.setFocus()
 
     def changeFocustoVen(self):
 
@@ -273,27 +349,7 @@ class inputUI(QWidget):
 
         self.btnOk.setFocus()
 
-    def MsSqlValidator(self):
 
-        self.qleValues = []
-        textMatNum = self.qleMatNum.text()
-        textVenBat = self.qleVenBat.text()
-        textPlace = self.qlePlace.text()
-        self.qleValues.append(textMatNum)
-        self.qleValues.append(textVenBat)
-        self.qleValues.append(textPlace)
-        print(self.qleValues)
-        self.conn = connectionAEU.TakeDataSql()
-        verifyValue = self.conn.VerifyMaterial(textMatNum)
-
-        if len(self.qleValues) != 0:
-            self.conn.Save(self.qleValues)
-            self.qleMatNum.clear()
-            self.qleVenBat.clear()
-            self.qlePlace.clear()
-            self.qleMatNum.setFocus()
-        else:
-            print('incorect data')
 
 """class MsSqlValidator():
     #This class work with data from UI and input to DB Warehouse
