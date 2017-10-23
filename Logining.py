@@ -1,41 +1,42 @@
-from PyQt5 import QtCore, QtGui, Qt
-
-class MainWindow(Qt.QMainWindow):
-    def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
-        self.central_widget = Qt.QStackedWidget()
-        self.setCentralWidget(self.central_widget)
-        login_widget = LoginWidget(self)
-        login_widget.button.clicked.connect(self.login)
-        self.central_widget.addWidget(login_widget)
-    def login(self):
-        logged_in_widget = LoggedWidget(self)
-        self.central_widget.addWidget(logged_in_widget)
-        self.central_widget.setCurrentWidget(logged_in_widget)
+import pyodbc
+import WareHouseAEU
 
 
-class LoginWidget(Qt.QWidget):
-    def __init__(self, parent=None):
-        super(LoginWidget, self).__init__(parent)
-        layout = Qt.QHBoxLayout()
-        self.button = Qt.QPushButton('Login')
-        layout.addWidget(self.button)
-        self.setLayout(layout)
-        # you might want to do self.button.click.connect(self.parent().login) here
+class TakeDataSql():
+    """This class TakeDataSql working with data on sql, for warehaouse"""
 
+    def __init__(self, uidSql, passSql):
+        """ This function for connection to db aeu on server UACVDB01\SQL2008EXPRESS"""
 
-class LoggedWidget(Qt.QWidget):
-    def __init__(self, parent=None):
-        super(LoggedWidget, self).__init__(parent)
-        layout = Qt.QHBoxLayout()
-        self.label = Qt.QLabel('logged in!')
-        layout.addWidget(self.label)
-        self.setLayout(layout)
+        self.logi = uidSql
+        self.pas = passSql
 
+        try:
+            self.connectionAeu = pyodbc.connect('Driver={SQL Server};'
+                                                'Server=UACVDB01\SQL2008EXPRESS;'
+                                                'Database=aeu;'
+                                                'uid=%s;pwd=%s' % (uidSql, passSql))
 
+            self.cursor = self.connectionAeu.cursor()
 
-if __name__ == '__main__':
-    app = Qt.QApplication([])
-    window = MainWindow()
-    window.show()
-    app.exec_()
+            print('OK')
+            self.status = 1
+            self.valueDescr = (uidSql + "." + passSql)
+            print(self.valueDescr)
+        except pyodbc.Error:
+            print('Galyak')
+            self.status = 2
+
+    def Save(self, ValueInterf):
+        """ This funtion for input data to table CableWarehouse """
+
+        print(ValueInterf)
+
+        try:
+            cursor = self.cursor
+            print("List - >", ValueInterf)
+            cursor.execute("INSERT INTO CableWarehouse(material,identificator,vendor_batch,place,state, description) VALUES(?, ?, ?, ?, ?, ?)", ValueInterf)
+            self.connectionAeu.commit()
+        except pyodbc.Error:
+
+            print('Try to save')

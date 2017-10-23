@@ -10,7 +10,8 @@ class TakeDataSql ():
         """ This function for connection to db aeu on server UACVDB01\SQL2008EXPRESS"""
 
 
-        print(uidSql, passSql)
+        self.logi = uidSql
+        self.pas = passSql
 
         try:
             self.connectionAeu = pyodbc.connect('Driver={SQL Server};'
@@ -35,34 +36,20 @@ class TakeDataSql ():
 
     def Save(self, ValueInterf):
         """ This funtion for input data to table CableWarehouse """
-
-        print(ValueInterf)
-
-        readconn = self.connectionAeu
-
-        cursor = self.cursor
-        print("List - >", ValueInterf)
-        material = ValueInterf[0]
-        identifier = ValueInterf[1]
-        deliveryNumber = ValueInterf[2]
-        place = ValueInterf[4]
-        curDate = ValueInterf[5]
-        state = ValueInterf[6]
-        cursor.execute("INSERT INTO CableWarehouse "
-                                    "(material, identificator, venfor_batch, place, state, date_and_time, description)"
-                                    "VALUES ('%s','%s','%s','%s', '%s','%s')" % (material,identifier,deliveryNumber,place,state,curDate))
-
-
-        print('Try to save')
-        readconn.commit()
+        try:
+            cursor = self.cursor
+            print("List - >", ValueInterf)
+            cursor.execute("INSERT INTO CableWarehouse(material,identificator,vendor_batch,place,state, description) VALUES(?, ?, ?, ?, ?, ?)", ValueInterf)
+        except pyodbc.Error:
+            print('Try to save')
+        self.connectionAeu.commit()
 
 
 
     def SelectPassword(self, login):
         """ This funtion for reading data from table CableWarehouse"""
 
-        readconn = self.connectionAeu
-        print('Try to save')
+        #readconn = self.connectionAeu
         cursor = self.cursor
 
         selectSQLcommand = ("SELECT Login,Password FROM LoginPassWareH WHERE Login='%s'" % login)
@@ -74,7 +61,7 @@ class TakeDataSql ():
                 self.logName = row[0]
                 self.pasName = row[1]
 
-                print("logName=%s, pasName=%s" % (self.logName, self.pasName))
+                #print("logName=%s, pasName=%s" % (self.logName, self.pasName))
         else:
             print("Incorect password")
 

@@ -57,7 +57,7 @@ class WarehouseMain(QMainWindow):
         print(self.logi)
         self.pas = self.loginWidget.password.text()
         print(self.pas)
-        self.con = connectionAEU.TakeDataSql(self.logi, self.pas)
+        qApp.con = connectionAEU.TakeDataSql(self.logi, self.pas)
 
 
 
@@ -113,12 +113,17 @@ class LoginWidget(QWidget):
         layout = QVBoxLayout()
 
         #Lable edit fot login
-        layout.addWidget(QLabel("Login - >"))
+        logLay = QLabel("Login - >")
+        logLay.setStyle()
+        layout.addWidget(logLay)
         self.login = QLineEdit()
         layout.addWidget(self.login)
+        self.login.setFocus()
+        self.login.returnPressed.connect(self.returnPrEntLog)
         layout.addWidget(QLabel("Password - >"))
         self.password = QLineEdit()
         layout.addWidget(self.password)
+        self.password.returnPressed.connect(self.returnPrEntPass)
         #Lable edit for password with hint method
         self.password.setEchoMode(QLineEdit.Password)
 
@@ -148,18 +153,23 @@ class LoginWidget(QWidget):
         self.setGeometry(10, 10, 400, 200)
         self.setLayout(layout)
 
-    """def validAccess(self):
+    def validAccess(self):
 
-        loginValid = self.login.text()
-        paswordValid = self.password.text()
-        self.connLogin = connectionAEU.TakeDataSql(loginValid, paswordValid)
+        self.connLogin = connectionAEU.TakeDataSql.status()
         if self.connLogin.status == 1:
             self.state = QLabel("__   __", self)
             self.state.setFont(QFont("Arial", 20))
             self.state.stateLable.setText("connected")
         else:
             self.state.stateLable.setText("Try Again")
-        """
+
+    def returnPrEntLog(self):
+        self.password.setFocus()
+
+    def returnPrEntPass(self):
+        self.button.setFocus()
+
+
 
 
 
@@ -237,6 +247,7 @@ class inputUI(QWidget):
         #self.setWindowIcon(QIcon('D:\LearnPython\AEU\scanner.png'))
         self.setGeometry(200, 200, 400, 200)
         self.inputLable()
+
         self.setLayout(layout)
 
     def inputLable(self):
@@ -295,11 +306,7 @@ class inputUI(QWidget):
         self.setGeometry(300, 300, 500, 280)
 
     def MsSqlValidator(self):
-
-        loginS = LoginWidget()
-        logi = loginS.login.text()
-        pas = loginS.password.text()
-
+        # This class work with data from UI and input to DB Warehouse
         self.qleValues = []
 
         self.textMatNum = self.qleMatNum.text()
@@ -311,18 +318,12 @@ class inputUI(QWidget):
         self.qleValues.append(textVenBat)
         self.qleValues.append(textPlace)
         status = 'wait'
-        datus = 'DAFAULT'
-        destript = (pas+"."+logi)
+        descript = 'user'
         self.qleValues.append(status)
-        self.qleValues.append(datus)
-        self.qleValues.append(destript)
+        self.qleValues.append(descript)
 
-
-        lo = '123'
-        conS = connectionAEU.TakeDataSql(logi, pas).Save(self.qleValues)
         print(self.qleValues)
-        #self.connI = connectionAEU.TakeDataSql()
-        #self.verifyValue = self.conn.VerifyMaterial(textMatNum)
+
 
         if len(self.qleValues) != 0:
             self.qleMatNum.clear()
@@ -330,6 +331,7 @@ class inputUI(QWidget):
             self.qleVenBat.clear()
             self.qlePlace.clear()
             self.qleMatNum.setFocus()
+            qApp.con.Save(self.qleValues)
         else:
             print('incorect data')
 
@@ -348,23 +350,6 @@ class inputUI(QWidget):
     def changeFocusBtn(self):
 
         self.btnOk.setFocus()
-
-
-
-"""class MsSqlValidator():
-    #This class work with data from UI and input to DB Warehouse
-    def __init__(self):
-
-        self.qleValues = []
-        textMatNum = inputUI.qleMatNum()
-        textVenBat = inputUI.qleVenBat()
-        textPlace = inputUI.qlePlace()
-        self.qleValues.append(textMatNum)
-        self.qleValues.append(textVenBat)
-        self.qleValues.append(textPlace)
-
-        self.conn = connectionAEU.TakeDataSql.Save(self.qleValues)"""
-
 
 class SearchUI(QWidget):
     def __init__(self, parent=None):
@@ -444,6 +429,7 @@ class SearchUI(QWidget):
 
 if __name__ == '__main__':
     app = QApplication([])
+
     window = WarehouseMain()
     window.show()
     app.exec()
