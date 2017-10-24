@@ -44,6 +44,15 @@ class TakeDataSql ():
             print('Try to save')
         self.connectionAeu.commit()
 
+    def Delete(self, valueInterf):
+        """This function delete data from sql"""
+        try:
+            cursor = self.cursor
+            print("List fro delete - >", valueInterf)
+            cursor.execute("DELETE FROM CableWarehouse(material,identificator,vendor_batch,place,state, description) VALUES(?, ?, ?, ?, ?, ?)", valueInterf)
+        except pyodbc.Error:
+            print('Incorect string')
+        self.connectionAeu.commit()
 
 
     def SelectPassword(self, login):
@@ -60,28 +69,39 @@ class TakeDataSql ():
             for row in results:
                 self.logName = row[0]
                 self.pasName = row[1]
-
-                #print("logName=%s, pasName=%s" % (self.logName, self.pasName))
         else:
             print("Incorect password")
 
 
+    def VerifyMaterial(self, valueMatNum, valueVedorBatch):
 
+        self.valueStatus = False
+        print(valueMatNum, valueVedorBatch)
+        try:
+            cursor =self.cursor
+            selectVerifySql = ("SELECT [material], [vendor_batch], [place] \
+                                  FROM [aeu].[dbo].[CableWarehouse] WHERE [material] = '%s' AND [vendor_batch] = '%s'" % (valueMatNum, valueVedorBatch))
+            cursor.execute(selectVerifySql)
+            self.results = cursor.fetchall()
 
-    def VerifyMaterial(self, valueVerifySql):
+            for raw in self.results:
+                self.matNum = raw[0]
+                self.vendBunch = raw[1]
+                self.place = raw[2]
+                print("Material Number- > %s, Vendor Bunch- > %s, Place- > %s" % (self.matNum, self.vendBunch, self.place))
 
-        readconn = self.connectionAeu
-        cursor =self.cursor
-        selectVerifySql = ("SELECT [material], [vendor_batch], [place] \
-                              FROM [aeu].[dbo].[CableWarehouse] WHERE [material] = '%s'" % valueVerifySql)
-        cursor.execute(selectVerifySql)
-        print(cursor.execute(selectVerifySql))
-        results = cursor.fetchall()
-        for raw in results:
-            self.matNum = raw[0]
-            self.vendBunch = raw[1]
-            self.place = raw[2]
-            print("Material Number- > %s, Vendor Bunch- > %s, Place- > %s" % (self.matNum, self.vendBunch, self.place))
+        except pyodbc.Error:
+            print('incoret data for verify')
+
+    def SearchMat(self, valMatN):
+
+        try:
+            cursor = self.cursor
+            selectMat = ("SELECT TOP 1 * FROM CableWarehouse WHERE material = '%s' ORDER BY vendor_batch"% valMatN)
+            cursor.execute(selectMat)
+            self.resultsSearch = cursor.fetchall()
+        except pyodbc.Error:
+            print('Incorect DATA Search')
 
 
 

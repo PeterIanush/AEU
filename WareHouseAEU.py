@@ -17,7 +17,7 @@ import os
 from PyQt5.QtWidgets import (QApplication, QWidget, QToolTip,
                              QPushButton, QMessageBox, QDesktopWidget,
                              QStackedWidget, QAction, qApp, QLabel, QLineEdit,
-                             QHBoxLayout, QInputDialog, QStackedLayout,
+                             QHBoxLayout, QInputDialog, QStackedLayout, QFrame,
                              QListWidget, QFormLayout, QVBoxLayout, QGroupBox)
 
 
@@ -72,8 +72,11 @@ class WarehouseMain(QMainWindow):
 
     def UIinput(self):
         self.inpbtn = inputUI(self)
+
         self.centralWidget.addWidget(self.inpbtn)
         self.centralWidget.setCurrentWidget(self.inpbtn)
+        self.inpbtn.qleMatNum.setFocus()
+        self.inpbtn.bbtn.clicked.connect(self.UIinit)
         #self.inpbtn.qlePlace.returnPressed.connect(self.dbHelper)
 
 
@@ -81,6 +84,9 @@ class WarehouseMain(QMainWindow):
         self.searchbtn = SearchUI(self)
         self.centralWidget.addWidget(self.searchbtn)
         self.centralWidget.setCurrentWidget(self.searchbtn)
+        self.searchbtn.qleSMatNum.setFocus()
+        self.searchbtn.sbbtn.clicked.connect(self.UIinit)
+
 
 
 class MainButton(QWidget):
@@ -91,7 +97,9 @@ class MainButton(QWidget):
         layout = QVBoxLayout()
         #self.centralWidget2 = QStackedWidget()
         self.btnInitUI = QPushButton('INPUT TO DB WAREHOUSE')
+        self.btnInitUI.setToolTip('This is a <b>button for input data wires to temporary warehouse</b>')
         self.btnSearchUI = QPushButton('SEARCH PLACE')
+        self.btnSearchUI.setToolTip('This is a <b>button for search place wires to temporary warehouse</b>')
         layout.addWidget(self.btnInitUI)
         layout.addWidget(self.btnSearchUI)
         self.btnInitUI.setFont(QFont("Arial", 14))
@@ -113,14 +121,19 @@ class LoginWidget(QWidget):
         layout = QVBoxLayout()
 
         #Lable edit fot login
-        logLay = QLabel("Login - >")
-        logLay.setStyle()
+        logLay = QLabel()
+        logLay.setFont(QFont("Arial Black", 14))
+        logLay.setText("<font color='red'>Login - ></font>")
+
         layout.addWidget(logLay)
         self.login = QLineEdit()
         layout.addWidget(self.login)
         self.login.setFocus()
         self.login.returnPressed.connect(self.returnPrEntLog)
-        layout.addWidget(QLabel("Password - >"))
+        pasLay = QLabel()
+        pasLay.setFont(QFont("Arial Black", 14))
+        pasLay.setText("<font color='red'>Password - ></font>")
+        layout.addWidget(pasLay)
         self.password = QLineEdit()
         layout.addWidget(self.password)
         self.password.returnPressed.connect(self.returnPrEntPass)
@@ -143,6 +156,7 @@ class LoginWidget(QWidget):
         layout.addWidget(self.button)
         layout.addWidget(self.lblLogining)
         self.button.setFont(QFont("Arial", 14))
+        self.button.setToolTip('This is a <b>are Logining button to Warehouse system</b>')
 
 
         pixmap = QPixmap("D:\LearnPython\AEU\impg7.jpg")
@@ -168,12 +182,6 @@ class LoginWidget(QWidget):
 
     def returnPrEntPass(self):
         self.button.setFocus()
-
-
-
-
-
-
 
 class ErrorLoginWidget(QWidget):
     def __init__(self, parent=None):
@@ -244,8 +252,13 @@ class inputUI(QWidget):
         qbtn.resize(qbtn.sizeHint())
         qbtn.move(610, 240)
 
+        self.bbtn = QPushButton('BACK', self)
+        self.bbtn.setToolTip('This is a <b>button for back to previous menu</b>')
+        self.bbtn.resize(self.bbtn.sizeHint())
+        self.bbtn.move(10, 240)
+
         #self.setWindowIcon(QIcon('D:\LearnPython\AEU\scanner.png'))
-        self.setGeometry(200, 200, 400, 200)
+        self.setGeometry(300, 300, 600, 400)
         self.inputLable()
 
         self.setLayout(layout)
@@ -257,14 +270,21 @@ class inputUI(QWidget):
         self.lblVenBat = QLabel(self)
         self.lblPlace = QLabel(self)
 
-        self.lblMatNum.setText('MatNum >')
-        self.lblMatNum.setFont(QFont("Arial", 12))
-        self.lblident.setText('Identificator >')
-        self.lblident.setFont(QFont("Arial", 12))
-        self.lblVenBat.setText('VenBat >')
-        self.lblVenBat.setFont(QFont("Arial", 12))
-        self.lblPlace.setText('Place>')
-        self.lblPlace.setFont(QFont("Arial", 12))
+        self.lblMatNum.setText("<font color='red'>Mat. Number-></font>")
+        self.lblMatNum.setFont(QFont("Arial Black", 12))
+        self.lblMatNum.resize(200, 25)
+
+        self.lblident.setText("<font color='red'>Identificator--></font>")
+        self.lblident.setFont(QFont("Arial Black", 12))
+        self.lblident.resize(200, 25)
+
+        self.lblVenBat.setText("<font color='red'>Vendor Batch></font>")
+        self.lblVenBat.setFont(QFont("Arial Black", 12))
+        self.lblVenBat.resize(200, 25)
+
+        self.lblPlace.setText("<font color='red'>Place--------------></font>")
+        self.lblPlace.setFont(QFont("Arial Black", 12))
+        self.lblPlace.resize(200, 25)
 
 
         self.qleMatNum = QLineEdit(self)
@@ -272,6 +292,7 @@ class inputUI(QWidget):
         self.qleMatNum.setMaxLength(8)
         self.qleMatNum.setFont(QFont("Arial", 14))
         self.qleMatNum.setFocus()
+        self.qleMatNum.setToolTip('Here <b>You need scan SAP material from SAP lablel</b>')
         self.qleMatNum.returnPressed.connect(self.changeFocustoIdent)
 
         self.qleIdent = QLineEdit(self)
@@ -279,12 +300,14 @@ class inputUI(QWidget):
         self.qleIdent.setMaxLength(8)
         self.qleIdent.setFont(QFont("Arial", 14))
         self.qleIdent.setFocus()
+        self.qleIdent.setToolTip('Here <b>You need scan identificator material from SAP lablel</b>')
         self.qleIdent.returnPressed.connect(self.changeFocustoVen)
 
         self.qleVenBat = QLineEdit(self)
         self.qleVenBat.setValidator(QIntValidator())
         self.qleVenBat.setMaxLength(10)
         self.qleVenBat.setFont(QFont("Arial", 14))
+        self.qleVenBat.setToolTip('Here <b>You need scan Vendor batch material from SAP lablel</b>')
         self.qleVenBat.returnPressed.connect(self.changeFocustoPlasce)
 
         self.qlePlace = QLineEdit(self)
@@ -292,40 +315,62 @@ class inputUI(QWidget):
         self.qlePlace.setMaxLength(9)
         self.qlePlace.setInputMask('w9e-99-99')
         self.qlePlace.setFont(QFont("Arial", 14))
-        self.qlePlace.returnPressed.connect(self.MsSqlValidator)
+        self.qlePlace.setToolTip('Here <b>You need scan Place material from lablel warehouse place</b>')
+        self.qlePlace.returnPressed.connect(self.verifyData)
 
         self.qleMatNum.move(165,15)
         self.qleIdent.move(165, 45)
         self.qleVenBat.move(165, 75)
         self.qlePlace.move(165, 105)
 
-        self.lblMatNum.move(95, 15)
-        self.lblident.move(75, 45)
-        self.lblVenBat.move(100, 75)
-        self.lblPlace.move(115, 105)
-        self.setGeometry(300, 300, 500, 280)
+        self.lblMatNum.move(35, 15)
+        self.lblident.move(35, 45)
+        self.lblVenBat.move(35, 75)
+        self.lblPlace.move(35, 105)
 
-    def MsSqlValidator(self):
-        # This class work with data from UI and input to DB Warehouse
-        self.qleValues = []
+        self.lblVerifyVenBat = QLabel(self)
+        self.lblVerifyVenBat.resize(400, 25)
+        self.lblVerifyVenBat.move(300, 15)
 
+        self.setGeometry(400, 400, 600, 280)
+
+    def verifyData(self):
+        #In this function we verify data before add to db warehouse
+
+        self.lblVerifyVenBat.setText("<font color='red'>'--------'></font>")
+        self.lblVerifyVenBat.setFont(QFont("Arial Black", 14))
         self.textMatNum = self.qleMatNum.text()
-        textVenBat = self.qleVenBat.text()
-        textPlace = self.qlePlace.text()
-        textIdent = self.qleIdent.text()
+        self.textVenBat = self.qleVenBat.text()
+        self.textPlace = self.qlePlace.text()
+        self.textIdent = self.qleIdent.text()
+        qApp.con.VerifyMaterial(self.textMatNum, self.textVenBat)
+        if qApp.con.results == []:
+            print(qApp.con.results)
+            self.lblVerifyVenBat.setText("<font color='green'>*Correct data save to db*</font>")
+            self.MsSqlWriter()
+        else:
+            self.lblVerifyVenBat.setText("<font color='red'>Incorret data scan another BC!!!</font>")
+            self.qleMatNum.clear()
+            self.qleIdent.clear()
+            self.qleVenBat.clear()
+            self.qlePlace.clear()
+            self.qleMatNum.setFocus()
+
+    def MsSqlWriter(self):
+        # This class work with data from UI and input to DB Warehouse
+        login = qApp.con.logi
+
+        self.qleValues = []
         self.qleValues.append(self.textMatNum)
-        self.qleValues.append(textIdent)
-        self.qleValues.append(textVenBat)
-        self.qleValues.append(textPlace)
+        self.qleValues.append(self.textIdent)
+        self.qleValues.append(self.textVenBat)
+        self.qleValues.append(self.textPlace)
         status = 'wait'
-        descript = 'user'
+        descript = login
         self.qleValues.append(status)
         self.qleValues.append(descript)
-
-        print(self.qleValues)
-
-
-        if len(self.qleValues) != 0:
+        if len(self.qleValues) != []:
+            print(self.qleValues)
             self.qleMatNum.clear()
             self.qleIdent.clear()
             self.qleVenBat.clear()
@@ -368,52 +413,131 @@ class SearchUI(QWidget):
         qbtn.clicked.connect(QCoreApplication.instance().quit)
         qbtn.setToolTip('This is a <b>QuitButton</b>')
         qbtn.resize(qbtn.sizeHint())
-        qbtn.move(330, 170)
+        qbtn.move(610, 240)
+
+        self.sbbtn = QPushButton('BACK', self)
+        self.sbbtn.setToolTip('This is a <b>button for back to previous menu</b>')
+        self.sbbtn.resize(self.sbbtn.sizeHint())
+        self.sbbtn.move(10, 240)
+
         # self.setWindowIcon(QIcon('D:\LearnPython\AEU\scanner.png'))
-        self.setGeometry(100, 100, 400, 200)
+        self.setGeometry(300, 300, 600, 280)
+        print('main serch ok')
         self.SearchLable()
         self.setLayout(layout)
 
     def SearchLable(self):
         # Here lable for input data
         self.lblSMatNum = QLabel(self)
+        self.lblSIdent = QLabel(self)
         self.lblSVenBat = QLabel(self)
         self.lblSPlace = QLabel(self)
+        self.lblDeleteSmNum = QLabel(self)
+        self.lblDeleteSident = QLabel(self)
+        self.lblDeleteSvBatch = QLabel(self)
+        self.lblDeleteSpl = QLabel(self)
+        self.lblDeleteSdescription = QLabel(self)
 
-        self.lblSMatNum.setText('MatNum >')
-        self.lblSMatNum.setFont(QFont("Arial", 12))
-        self.lblSVenBat.setText('VenBat >')
-        self.lblSVenBat.setFont(QFont("Arial", 12))
-        self.lblSPlace.setText('Place>')
-        self.lblSPlace.setFont(QFont("Arial", 12))
+
+        self.lblSMatNum.setText("<font color='red'>SMat. Number-></font>")
+        self.lblSMatNum.setFont(QFont("Arial Black", 12))
+        self.lblSMatNum.resize(200, 25)
+        self.lblSIdent.setText("<font color='red'>SIdentificator--></font>")
+        self.lblSIdent.setFont(QFont("Arial Black", 12))
+        self.lblSIdent.resize(200, 25)
+        self.lblSVenBat.setText("<font color='red'>SVendor Batch></font>")
+        self.lblSVenBat.setFont(QFont("Arial Black", 12))
+        self.lblSVenBat.resize(200, 25)
+        self.lblSPlace.setText("<font color='red'>SPlace--------------></font>")
+        self.lblSPlace.setFont(QFont("Arial Black", 12))
+        self.lblSPlace.resize(200, 25)
+        self.lblDeleteSmNum.setText("<font color='red'>List for delete></font>")
+        self.lblDeleteSmNum.setFont(QFont("Arial Black", 12))
+        self.lblDeleteSmNum.resize(250, 25)
+        self.lblDeleteSident.setText("<font color='red'>List for delete></font>")
+        self.lblDeleteSident.setFont(QFont("Arial Black", 12))
+        self.lblDeleteSident.resize(250, 25)
+        self.lblDeleteSvBatch.setText("<font color='red'>List for delete></font>")
+        self.lblDeleteSvBatch.setFont(QFont("Arial Black", 12))
+        self.lblDeleteSvBatch.resize(250, 25)
+        self.lblDeleteSpl.setText("<font color='red'>List for delete></font>")
+        self.lblDeleteSpl.setFont(QFont("Arial Black", 12))
+        self.lblDeleteSpl.resize(250, 25)
+        self.lblDeleteSdescription.setText("<font color='red'>List for delete></font>")
+        self.lblDeleteSdescription.setFont(QFont("Arial Black", 12))
+        self.lblDeleteSdescription.resize(250, 25)
 
         self.qleSMatNum = QLineEdit(self)
         self.qleSMatNum.setValidator(QIntValidator())
         self.qleSMatNum.setMaxLength(8)
-        # self.qleMatNum.move(215, 305)
+        self.qleSMatNum.setFont(QFont("Arial", 14))
         self.qleSMatNum.setFocus()
-        #self.qleSMatNum.returnPressed.connect(self.changeFocustoVen)
+        self.qleSMatNum.setToolTip('Here <b>You need scan SAP material from SAP lablel</b>')
+        self.qleSMatNum.returnPressed.connect(self.changeSFocustoIdent)
+        self.qleSMatNum.returnPressed.connect(self.verifyDataSql)
+
+        self.qleSIdent = QLineEdit(self)
+        self.qleSIdent.setValidator(QIntValidator())
+        self.qleSIdent.setMaxLength(8)
+        self.qleSIdent.setFont(QFont("Arial", 14))
+        self.qleSIdent.setFocus()
+        self.qleSIdent.setToolTip('Here <b>You need scan SIdentificator material from SAP lablel</b>')
+        self.qleSIdent.returnPressed.connect(self.changeSFocustoVen)
+        self.qleSIdent.returnPressed.connect(self.aprSidentificator)
 
         self.qleSVenBat = QLineEdit(self)
         self.qleSVenBat.setValidator(QIntValidator())
         self.qleSVenBat.setMaxLength(10)
-        #self.qleSVenBat.returnPressed.connect(self.changeFocustoPlasce)
+        self.qleSVenBat.setFont(QFont("Arial", 14))
+        self.qleSVenBat.setToolTip('Here <b>You need scan Vendor batch material from SAP lablel</b>')
+        self.qleSVenBat.returnPressed.connect(self.changeSFocustoPlasce)
+        self.qleSVenBat.returnPressed.connect(self.aprSvBatch)
 
         self.qleSPlace = QLineEdit(self)
+        # qleSPlace.setValidator(QRegExpValidator('W'))
+        self.qleSPlace.setMaxLength(9)
         self.qleSPlace.setInputMask('w9e-99-99')
         self.qleSPlace.setFont(QFont("Arial", 14))
-        #self.qleSPlace.returnPressed.connect(self.MsSqlValidator)
+        self.qleSPlace.setToolTip('Here <b>You need scan SPlace material from lablel warehouse SPlace</b>')
+        self.qleSPlace.returnPressed.connect(self.aprSpl)
 
 
-
-        self.qleSMatNum.move(165, 35)
+        self.qleSMatNum.move(165, 15)
+        self.qleSIdent.move(165, 45)
         self.qleSVenBat.move(165, 75)
-        self.qleSPlace.move(165, 125)
+        self.qleSPlace.move(165, 105)
 
-        self.lblSMatNum.move(95, 35)
-        self.lblSVenBat.move(100, 75)
-        self.lblSPlace.move(115, 125)
-        self.setGeometry(100, 100, 400, 200)
+        self.lblSMatNum.move(35, 15)
+        self.lblSIdent.move(35, 45)
+        self.lblSVenBat.move(35, 75)
+        self.lblSPlace.move(35, 105)
+        self.lblDeleteSmNum.move(270, 15)
+        self.lblDeleteSident.move(270, 45)
+        self.lblDeleteSvBatch.move(270, 75)
+        self.lblDeleteSpl.move(270, 105)
+        self.lblDeleteSdescription.move(270, 135)
+
+        self.setGeometry(400, 400, 600, 280)
+
+    def verifyDataSql(self):
+        #self.valueSearch = []
+        findMat = self.qleSMatNum.text()
+        #self.valueSearch.append(findMat)
+        print('Ok search', findMat)
+        qApp.con.SearchMat(findMat)
+        print('Ok search')
+        delList = qApp.con.resultsSearch
+        for raw in delList:
+            self.SmNum = raw[1]
+            self.Sident = raw[2]
+            self.SvBatch = raw[3]
+            self.Spl = raw[4]
+            self.Sdescription = raw[7]
+        self.lblDeleteSmNum.setText("<font color='green'>delete>%s</font>" % self.SmNum)
+        self.lblDeleteSident.setText("<font color='red'>delete>%s</font>" % self.Sident)
+        self.lblDeleteSvBatch.setText("<font color='red'>delete>%s</font>" % self.SvBatch)
+        self.lblDeleteSpl.setText("<font color='red'>delete>%s</font>" % self.Spl)
+        self.lblDeleteSdescription.setText("<font color='red'>delete>%s</font>" % self.Sdescription)
 
     def changeSFocustoVen(self):
 
@@ -423,9 +547,45 @@ class SearchUI(QWidget):
 
         self.qleSPlace.setFocus()
 
-    def changeSFocusBtn(self):
+    def changeSFocustoIdent(self):
+        self.qleSIdent.setFocus()
 
-        self.btnOk.setFocus()
+    def aprSidentificator(self):
+        findIdent = self.qleSIdent.text()
+        a = int(findIdent)
+        b = int(self.Sident)
+        if a == b:
+            self.lblDeleteSident.setText("<font color='green'>delete>%s</font>" % self.Sident)
+            self.qleSVenBat.setFocus()
+        else:
+            self.qleSIdent.clear()
+            self.qleSIdent.setFocus()
+
+    def aprSvBatch(self):
+        findVB = self.qleSVenBat.text()
+        a = int(findVB)
+        b = int(self.SvBatch)
+        if a == b:
+            self.lblDeleteSvBatch.setText("<font color='green'>delete>%s</font>" % self.SvBatch)
+            self.qleSPlace.setFocus()
+        else:
+            self.qleSVenBat.clear()
+            self.qleSVenBat.setFocus()
+
+    def aprSpl(self):
+        findpl = self.qleSPlace.text()
+        a = int(findpl)
+        b = int(self.Spl)
+        if a == b:
+            self.lblDeleteSpl.setText("<font color='green'>delete>%s</font>" % self.Spl)
+            self.qleSMatNum.setFocus()
+        else:
+            self.qleSPlace.clear()
+            self.qleSPlace.setFocus()
+
+
+
+
 
 if __name__ == '__main__':
     app = QApplication([])
