@@ -5,7 +5,6 @@ import WareHouseAEU
 class TakeDataSql ():
     """This class TakeDataSql working with data on sql, for warehaouse"""
 
-
     def __init__(self, uidSql, passSql):
         """ This function for connection to db aeu on server UACVDB01\SQL2008EXPRESS"""
 
@@ -21,7 +20,6 @@ class TakeDataSql ():
 
 
             self.cursor = self.connectionAeu.cursor()
-
             print('OK')
             self.status = 1
             self.valueDescr = (uidSql+"."+passSql)
@@ -30,29 +28,27 @@ class TakeDataSql ():
             print('Galyak')
             self.status = 2
 
-
-
-
-
     def Save(self, ValueInterf):
         """ This funtion for input data to table CableWarehouse """
         try:
             cursor = self.cursor
             print("List - >", ValueInterf)
             cursor.execute("INSERT INTO CableWarehouse(material,identificator,vendor_batch,place,state, description) VALUES(?, ?, ?, ?, ?, ?)", ValueInterf)
+            self.connectionAeu.commit()
         except pyodbc.Error:
             print('Try to save')
-        self.connectionAeu.commit()
+
 
     def Delete(self, valueInterf):
         """This function delete data from sql"""
         try:
             cursor = self.cursor
             print("List fro delete - >", valueInterf)
-            cursor.execute("DELETE FROM CableWarehouse(material,identificator,vendor_batch,place,state, description) VALUES(?, ?, ?, ?, ?, ?)", valueInterf)
+            cursor.execute("DELETE FROM CableWarehouse WHERE id = '%s'" % valueInterf)
+            self.connectionAeu.commit()
         except pyodbc.Error:
             print('Incorect string')
-        self.connectionAeu.commit()
+
 
 
     def SelectPassword(self, login):

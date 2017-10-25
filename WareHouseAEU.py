@@ -528,6 +528,7 @@ class SearchUI(QWidget):
         print('Ok search')
         delList = qApp.con.resultsSearch
         for raw in delList:
+            self.Sid = raw[0]
             self.SmNum = raw[1]
             self.Sident = raw[2]
             self.SvBatch = raw[3]
@@ -574,10 +575,15 @@ class SearchUI(QWidget):
 
     def aprSpl(self):
         findpl = self.qleSPlace.text()
-        a = int(findpl)
-        b = int(self.Spl)
+        a = findpl
+        b = self.Spl
         if a == b:
             self.lblDeleteSpl.setText("<font color='green'>delete>%s</font>" % self.Spl)
+            qApp.con.Delete(self.Sid)
+            self.qleSMatNum.clear()
+            self.qleSIdent.clear()
+            self.qleSVenBat.clear()
+            self.qleSPlace.clear()
             self.qleSMatNum.setFocus()
         else:
             self.qleSPlace.clear()
