@@ -55,18 +55,17 @@ class TakeDataSql ():
         """ This funtion for reading data from table CableWarehouse"""
 
         #readconn = self.connectionAeu
-        cursor = self.cursor
+        try:
 
-        selectSQLcommand = ("SELECT Login,Password FROM LoginPassWareH WHERE Login='%s'" % login)
-        print(selectSQLcommand)
-        cursor.execute(selectSQLcommand)
-        results = cursor.fetchall()
-        if results != None:
-            for row in results:
-                self.logName = row[0]
-                self.pasName = row[1]
-        else:
-            print("Incorect password")
+            cursor = self.cursor
+            selectSQLcommand = ("SELECT * FROM LoginPassWareH WHERE login='%s'"% login)
+            print(selectSQLcommand)
+            cursor.execute(selectSQLcommand)
+            self.Pasresults = cursor.fetchall()
+        except pyodbc.Error:
+            print('Invalid')
+
+
 
 
     def VerifyMaterial(self, valueMatNum, valueVedorBatch):
@@ -98,6 +97,15 @@ class TakeDataSql ():
             self.resultsSearch = cursor.fetchall()
         except pyodbc.Error:
             print('Incorect DATA Search')
+
+    def saveBeforeDelete(self, ValueDel):
+        print(ValueDel)
+        try:
+            cursor = self.cursor
+            cursor.execute("INSERT INTO CableWarehouseDeleted(material,identificator,vendor_batch,place,state,description) VALUES(?, ?, ?, ?, ?, ?)", ValueDel)
+            self.connectionAeu.commit()
+        except pyodbc.Error:
+            print("Can't SAVE")
 
 
 

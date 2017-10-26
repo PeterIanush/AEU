@@ -36,11 +36,7 @@ class WarehouseMain(QMainWindow):
         self.loginWidget = LoginWidget(self)
         self.loginWidget.button.clicked.connect(self.UIinit)
         self.setWindowIcon(QIcon('D:\LearnPython\AEU\scanner.png'))
-        #stateLable = QLabel("_           __", self)
-        #self.stateLable.move(510, 240)
-
         self.centralWidget.addWidget(self.loginWidget)
-
         self.setGeometry(300, 300, 848, 280)
         self.show()
 
@@ -57,9 +53,6 @@ class WarehouseMain(QMainWindow):
         print(self.logi)
         self.pas = self.loginWidget.password.text()
         print(self.pas)
-        qApp.con = connectionAEU.TakeDataSql(self.logi, self.pas)
-
-
 
     def connectedLWidget(self):
 
@@ -69,16 +62,13 @@ class WarehouseMain(QMainWindow):
 
         self.erroLable = self.stateLable.setText("Try Again")
 
-
     def UIinput(self):
         self.inpbtn = inputUI(self)
-
         self.centralWidget.addWidget(self.inpbtn)
         self.centralWidget.setCurrentWidget(self.inpbtn)
         self.inpbtn.qleMatNum.setFocus()
         self.inpbtn.bbtn.clicked.connect(self.UIinit)
         #self.inpbtn.qlePlace.returnPressed.connect(self.dbHelper)
-
 
     def UIsearch(self):
         self.searchbtn = SearchUI(self)
@@ -86,8 +76,6 @@ class WarehouseMain(QMainWindow):
         self.centralWidget.setCurrentWidget(self.searchbtn)
         self.searchbtn.qleSMatNum.setFocus()
         self.searchbtn.sbbtn.clicked.connect(self.UIinit)
-
-
 
 class MainButton(QWidget):
     def __init__(self, parent=None):
@@ -137,6 +125,7 @@ class LoginWidget(QWidget):
         self.password = QLineEdit()
         layout.addWidget(self.password)
         self.password.returnPressed.connect(self.returnPrEntPass)
+
         #Lable edit for password with hint method
         self.password.setEchoMode(QLineEdit.Password)
 
@@ -155,6 +144,7 @@ class LoginWidget(QWidget):
         self.button = QPushButton("LOGIN")
         layout.addWidget(self.button)
         layout.addWidget(self.lblLogining)
+        self.button.hide()
         self.button.setFont(QFont("Arial", 14))
         self.button.setToolTip('This is a <b>are Logining button to Warehouse system</b>')
 
@@ -164,24 +154,41 @@ class LoginWidget(QWidget):
         self.lblInput.setPixmap(pixmap)
         self.lblInput.show()
 
+        self.state = QLabel("__   __", self)
+        self.state.setFont(QFont("Arial Black", 20))
+        self.state.move(10, 300)
+
         self.setGeometry(10, 10, 400, 200)
         self.setLayout(layout)
 
     def validAccess(self):
 
-        self.connLogin = connectionAEU.TakeDataSql.status()
-        if self.connLogin.status == 1:
-            self.state = QLabel("__   __", self)
-            self.state.setFont(QFont("Arial", 20))
-            self.state.stateLable.setText("connected")
+        logText = self.login.text()
+        print(logText)
+        pasText = self.password.text()
+        qApp.con = connectionAEU.TakeDataSql(logText, pasText)
+        qApp.con.SelectPassword(logText)
+        rowLogin = qApp.con.Pasresults
+        for raw in rowLogin:
+            self.logName = raw[1]
+            self.pasName = raw[2]
+
+        if self.logName == logText:
+            print('Try again')
+            #self.state.stateLable.setText("connected")
+            self.button.show()
         else:
-            self.state.stateLable.setText("Try Again")
+            self.login.setFocus()
+            print('Try again')
+            #self.state.stateLable.setText("Try Again")
 
     def returnPrEntLog(self):
         self.password.setFocus()
 
+
     def returnPrEntPass(self):
         self.button.setFocus()
+        self.validAccess()
 
 class ErrorLoginWidget(QWidget):
     def __init__(self, parent=None):
@@ -579,6 +586,7 @@ class SearchUI(QWidget):
         b = self.Spl
         if a == b:
             self.lblDeleteSpl.setText("<font color='green'>delete>%s</font>" % self.Spl)
+            self.writeToWHDeleted()
             qApp.con.Delete(self.Sid)
             self.qleSMatNum.clear()
             self.qleSIdent.clear()
@@ -589,9 +597,16 @@ class SearchUI(QWidget):
             self.qleSPlace.clear()
             self.qleSPlace.setFocus()
 
-
-
-
+    def writeToWHDeleted(self):
+        valueDel = []
+        state = 'deleted'
+        valueDel.append(self.SmNum)
+        valueDel.append(self.Sident)
+        valueDel.append(self.SvBatch)
+        valueDel.append(self.Spl)
+        valueDel.append(state)
+        valueDel.append(qApp.con.logi)
+        qApp.con.saveBeforeDelete(valueDel)
 
 if __name__ == '__main__':
     app = QApplication([])
