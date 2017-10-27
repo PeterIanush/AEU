@@ -2,14 +2,14 @@
 --------------------------PROGRAM--FOR--TEMPORARY--WAREHOUSE--ON--AEU----------------------
 1. This program can add data to DB CableWarehouse on cellular warehouse for production
     What class we using for this task?
-    -
+    -WarehouseMain -> LoginWidget -> MainButton -> inputUI
 2. This program have secure module for work with different premission with data
     What class we using for this task?
-    -
+    - WarehouseMain -> LoginWidget -> MainButton
 3. This program can search find  a tube with a coil of cable along the SAP number and if You
 take this coil, program clear data about this coil from DB
     What class we using for this task?
-    -
+    - WarehouseMain -> LoginWidget -> MainButton -> SearchLable
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"""
 import connectionAEU
 
@@ -258,7 +258,7 @@ class inputUI(QWidget):
         qbtn.move(700, 240)
         # Button for back to previous menu
         self.bbtn = QPushButton('BACK', self)
-        self.bbtn.setToolTip('Ця кнопка<b>поверне вас в попереднє меню</b>')
+        self.bbtn.setToolTip('Ця кнопка<b> поверне вас в попереднє меню</b>')
         self.bbtn.resize(self.bbtn.sizeHint())
         self.bbtn.move(10, 240)
 
@@ -271,25 +271,25 @@ class inputUI(QWidget):
 
         # Create lable for description
         self.lblMatNum = QLabel(self)
-        self.lblident = QLabel(self)
+        #self.lblident = QLabel(self)
         self.lblVenBat = QLabel(self)
         self.lblPlace = QLabel(self)
 
         # Text and text options for labels
         self.lblMatNum.setText("<font color='red'>Mat. Number-></font>")
-        self.lblident.setText("<font color='red'>Identificator--></font>")
+        #self.lblident.setText("<font color='red'>Identificator--></font>")
         self.lblVenBat.setText("<font color='red'>Batch-------------></font>")
         self.lblPlace.setText("<font color='red'>Place-------------></font>")
 
         # Fonts for labels
         self.lblMatNum.setFont(QFont("Arial Black", 18))
-        self.lblident.setFont(QFont("Arial Black", 18))
+        #self.lblident.setFont(QFont("Arial Black", 18))
         self.lblVenBat.setFont(QFont("Arial Black", 18))
         self.lblPlace.setFont(QFont("Arial Black", 18))
 
         # Size properties description labels
         self.lblMatNum.resize(300, 45)
-        self.lblident.resize(300, 45)
+        #self.lblident.resize(300, 45)
         self.lblVenBat.resize(300, 45)
         self.lblPlace.resize(300, 45)
 
@@ -300,15 +300,15 @@ class inputUI(QWidget):
 
         self.qleMatNum.setFocus()
         self.qleMatNum.setToolTip('Сюди<b> проскануйте штрих код матеріалу з SAP бірки (лівий верхній куток!)</b>')
-        self.qleMatNum.returnPressed.connect(self.changeFocustoIdent)
+        self.qleMatNum.returnPressed.connect(self.changeFocustoVen)
 
         # Label Edit for identifitator with parameters
-        self.qleIdent = QLineEdit(self)
+        """self.qleIdent = QLineEdit(self)
         self.qleIdent.setValidator(QIntValidator())
         self.qleIdent.setMaxLength(8)
         self.qleIdent.setFocus()
         self.qleIdent.setToolTip('Сюди <b> проскануйте штрих код ідентифікатор матеріалу з SAP бірки</b>')
-        self.qleIdent.returnPressed.connect(self.changeFocustoVen)
+        self.qleIdent.returnPressed.connect(self.changeFocustoVen)"""
 
         # Label Edit for Bath with parameters
         self.qleVenBat = QLineEdit(self)
@@ -326,34 +326,34 @@ class inputUI(QWidget):
 
         # Fonts for labels edit
         self.qleMatNum.setFont(QFont("Arial", 28))
-        self.qleIdent.setFont(QFont("Arial", 28))
+        #self.qleIdent.setFont(QFont("Arial", 28))
         self.qleVenBat.setFont(QFont("Arial", 28))
         self.qlePlace.setFont(QFont("Arial", 28))
 
         # Size properties for label edit
         self.qleMatNum.resize(300, 55)
         self.qlePlace.resize(300, 55)
-        self.qleIdent.resize(300, 55)
+        #self.qleIdent.resize(300, 55)
         self.qleVenBat.resize(300, 55)
 
         # Posiotion properties for label edit
         self.qleMatNum.move(300,15)
-        self.qleIdent.move(300, 85)
-        self.qleVenBat.move(300, 145)
-        self.qlePlace.move(300, 215)
+        #self.qleIdent.move(300, 85)
+        self.qleVenBat.move(300, 95)
+        self.qlePlace.move(300, 165)
 
         # Posiotion properties for label desrption
         self.lblMatNum.move(105, 15)
-        self.lblident.move(105, 85)
-        self.lblVenBat.move(105, 145)
-        self.lblPlace.move(105, 215)
+        #self.lblident.move(105, 85)
+        self.lblVenBat.move(105, 95)
+        self.lblPlace.move(105, 165)
 
         # Verify lable with properties
         self.lblVerifyVenBat = QLabel(self)
         self.lblVerifyVenBat.setText("<font color='red'>'IN PROCESS'</font>")
         self.lblVerifyVenBat.setFont(QFont("Arial Black", 14))
-        self.lblVerifyVenBat.resize(700, 25)
-        self.lblVerifyVenBat.move(620, 85)
+        self.lblVerifyVenBat.resize(300, 25)
+        self.lblVerifyVenBat.move(270, 240)
 
         self.setGeometry(400, 400, 600, 280)
 
@@ -364,7 +364,7 @@ class inputUI(QWidget):
         self.textMatNum = self.qleMatNum.text()
         self.textVenBat = self.qleVenBat.text()
         self.textPlace = self.qlePlace.text()
-        self.textIdent = self.qleIdent.text()
+        self.textIdent = '90909090'#self.qleIdent.text()
 
         #call fontion from connectionAEU.VerifyMaterial with 2 parametras
         qApp.con.VerifyMaterial(self.textMatNum, self.textVenBat)
@@ -376,7 +376,7 @@ class inputUI(QWidget):
         else:
             self.lblVerifyVenBat.setText("<font color='red'>Incorret data scan another BC!!!</font>")
             self.qleMatNum.clear()
-            self.qleIdent.clear()
+            #self.qleIdent.clear()
             self.qleVenBat.clear()
             self.qlePlace.clear()
             self.qleMatNum.setFocus()
@@ -400,7 +400,7 @@ class inputUI(QWidget):
         #method for verify data
         if len(self.qleValues) != []:
             self.qleMatNum.clear()
-            self.qleIdent.clear()
+            #self.qleIdent.clear()
             self.qleVenBat.clear()
             self.qlePlace.clear()
             self.qleMatNum.setFocus()
@@ -408,9 +408,9 @@ class inputUI(QWidget):
         else:
             print('incorect data')
 
-    def changeFocustoIdent(self):
+    """def changeFocustoIdent(self):
         # set cursor to identificator label
-        self.qleIdent.setFocus()
+        self.qleIdent.setFocus()"""
 
     def changeFocustoVen(self):
         # set cursor to identificator label
@@ -459,52 +459,52 @@ class SearchUI(QWidget):
 
         #labels desctription
         self.lblSMatNum = QLabel(self)
-        self.lblSIdent = QLabel(self)
+        #self.lblSIdent = QLabel(self)
         self.lblSVenBat = QLabel(self)
         self.lblSPlace = QLabel(self)
 
         #information labels about status material in DB
         self.lblDeleteSmNum = QLabel(self)
-        self.lblDeleteSident = QLabel(self)
+        #self.lblDeleteSident = QLabel(self)
         self.lblDeleteSvBatch = QLabel(self)
         self.lblDeleteSpl = QLabel(self)
         self.lblDeleteSdescription = QLabel(self)
 
         #Fonts color and text for descrption labels
         self.lblSMatNum.setText("<font color='red'>S_Mat. Number></font>")
-        self.lblSIdent.setText("<font color='red'>S_Identificator-></font>")
+        #self.lblSIdent.setText("<font color='red'>S_Identificator-></font>")
         self.lblSVenBat.setText("<font color='red'>S_Batch------------></font>")
         self.lblSPlace.setText("<font color='red'>S_Place------------></font>")
 
         #Fonts for descrption labels
         self.lblSPlace.setFont(QFont("Arial Black", 16))
         self.lblSVenBat.setFont(QFont("Arial Black", 16))
-        self.lblSIdent.setFont(QFont("Arial Black", 16))
+        #self.lblSIdent.setFont(QFont("Arial Black", 16))
         self.lblSMatNum.setFont(QFont("Arial Black", 16))
 
         #size description labels
         self.lblSMatNum.resize(300, 55)
-        self.lblSIdent.resize(300, 55)
+        #self.lblSIdent.resize(300, 55)
         self.lblSVenBat.resize(300, 55)
         self.lblSPlace.resize(300, 55)
 
         #Font color and text for status label
         self.lblDeleteSmNum.setText("<font color='orange'> in process></font>")
-        self.lblDeleteSident.setText("<font color='orange'> in process></font>")
+        #self.lblDeleteSident.setText("<font color='orange'> in process></font>")
         self.lblDeleteSvBatch.setText("<font color='orange'> in process></font>")
         self.lblDeleteSpl.setText("<font color='orange'> in process></font>")
         self.lblDeleteSdescription.setText("<font color='orange'>responsible></font>")
 
         #Font for status label
         self.lblDeleteSmNum.setFont(QFont("Arial Black", 12))
-        self.lblDeleteSident.setFont(QFont("Arial Black", 12))
+        #self.lblDeleteSident.setFont(QFont("Arial Black", 12))
         self.lblDeleteSvBatch.setFont(QFont("Arial Black", 12))
         self.lblDeleteSpl.setFont(QFont("Arial Black", 12))
         self.lblDeleteSdescription.setFont(QFont("Arial Black", 12))
 
         #size for status label
         self.lblDeleteSmNum.resize(200, 55)
-        self.lblDeleteSident.resize(200, 55)
+        #self.lblDeleteSident.resize(200, 55)
         self.lblDeleteSvBatch.resize(200, 55)
         self.lblDeleteSpl.resize(200, 55)
         self.lblDeleteSdescription.resize(200, 55)
@@ -514,16 +514,16 @@ class SearchUI(QWidget):
         self.qleSMatNum.setValidator(QIntValidator())
         self.qleSMatNum.setMaxLength(8)
         self.qleSMatNum.setFocus()
-        self.qleSMatNum.returnPressed.connect(self.changeSFocustoIdent)
+        self.qleSMatNum.returnPressed.connect(self.changeSFocustoVen)
         self.qleSMatNum.returnPressed.connect(self.verifyDataSql)
 
         # Label edit for Identificator with properties
-        self.qleSIdent = QLineEdit(self)
+        """self.qleSIdent = QLineEdit(self)
         self.qleSIdent.setValidator(QIntValidator())
         self.qleSIdent.setMaxLength(8)
         self.qleSIdent.setFocus()
         self.qleSIdent.returnPressed.connect(self.changeSFocustoVen)
-        self.qleSIdent.returnPressed.connect(self.aprSidentificator)
+        self.qleSIdent.returnPressed.connect(self.aprSidentificator)"""
 
         # Label edit for Batch number with properties
         self.qleSVenBat = QLineEdit(self)
@@ -540,40 +540,46 @@ class SearchUI(QWidget):
 
         #Tooltip for label edit
         self.qleSVenBat.setToolTip('Сюди <b>потрібно занести просканувавши штрих код SAP Batch номеру матеріалу і якщо маркер з ліва зелений ви просканували коректні дані</b>')
-        self.qleSIdent.setToolTip('Сюди <b>потрібно занести просканувавши штрих код ідентифікатора і якщо маркер з ліва зелений ви просканували коректні дані</b>')
+        #self.qleSIdent.setToolTip('Сюди <b>потрібно занести просканувавши штрих код ідентифікатора і якщо маркер з ліва зелений ви просканували коректні дані</b>')
         self.qleSMatNum.setToolTip('Сюди <b>потрібно занести просканувавши шрих код SAP номеру матеріала і якщо маркер з ліва зелений ви просканували коректні дані</b>')
         self.qleSPlace.setToolTip('Сюди <b>потрібнозанести просканувавши штрих код складо-місця і якщо маркер з ліва зелений ви просканували коректні дані</b>')
 
         #Font for label edit
         self.qleSMatNum.setFont(QFont("Arial", 22))
-        self.qleSIdent.setFont(QFont("Arial", 22))
+        #self.qleSIdent.setFont(QFont("Arial", 22))
         self.qleSVenBat.setFont(QFont("Arial", 22))
         self.qleSPlace.setFont(QFont("Arial", 22))
 
         #position for label edit(pixel)
         self.qleSMatNum.move(270, 15)
-        self.qleSIdent.move(270, 85)
-        self.qleSVenBat.move(270, 145)
-        self.qleSPlace.move(270, 215)
+        #self.qleSIdent.move(270, 85)
+        self.qleSVenBat.move(270, 95)
+        self.qleSPlace.move(270, 165)
 
         #size for label edit
         self.qleSMatNum.resize(300, 55)
         self.qleSVenBat.resize(300, 55)
-        self.qleSIdent.resize(300, 55)
+        #self.qleSIdent.resize(300, 55)
         self.qleSPlace.resize(300, 55)
 
         #position label description
         self.lblSMatNum.move(85, 15)
-        self.lblSIdent.move(85, 85)
-        self.lblSVenBat.move(85, 145)
-        self.lblSPlace.move(85, 215)
+        #self.lblSIdent.move(85, 85)
+        self.lblSVenBat.move(85, 95)
+        self.lblSPlace.move(85, 165)
 
         #position status label
         self.lblDeleteSmNum.move(570, 15)
-        self.lblDeleteSident.move(570, 85)
-        self.lblDeleteSvBatch.move(570, 145)
-        self.lblDeleteSpl.move(570, 215)
+        #self.lblDeleteSident.move(570, 85)
+        self.lblDeleteSvBatch.move(570, 95)
+        self.lblDeleteSpl.move(570, 165)
         self.lblDeleteSdescription.move(570, 240)
+
+        #proces informer
+        self.aprlbl = QLabel()
+        self.aprlbl.setFont(QFont("Arial", 12))
+        self.aprlbl.resize(300, 45)
+        self.aprlbl.move(270, 240)
 
         self.setGeometry(400, 400, 600, 280)
 
@@ -594,12 +600,12 @@ class SearchUI(QWidget):
             for raw in delList:
                 self.Sid = raw[0]
                 self.SmNum = raw[1]
-                self.Sident = raw[2]
+                #self.Sident = raw[2]
                 self.SvBatch = raw[3]
                 self.Spl = raw[4]
                 self.Sdescription = raw[7]
             self.lblDeleteSmNum.setText("<font color='green'> in process>%s</font>" % self.SmNum)
-            self.lblDeleteSident.setText("<font color='orange'> in process>%s</font>" % self.Sident)
+            #self.lblDeleteSident.setText("<font color='orange'> in process>%s</font>" % self.Sident)
             self.lblDeleteSvBatch.setText("<font color='orange'> in process>%s</font>" % self.SvBatch)
             self.lblDeleteSpl.setText("<font color='orange'> in process>%s</font>" % self.Spl)
             self.lblDeleteSdescription.setText("<font color='orange'>Responsible>%s</font>" % self.Sdescription)
@@ -616,11 +622,11 @@ class SearchUI(QWidget):
         # set cursor to Place label
         self.qleSPlace.setFocus()
 
-    def changeSFocustoIdent(self):
+    """def changeSFocustoIdent(self):
         # set cursor to Identificator label
-        self.qleSIdent.setFocus()
+        self.qleSIdent.setFocus()"""
 
-    def aprSidentificator(self):
+    """def aprSidentificator(self):
         #method for verification of current input data to identificator label edit
         findIdent = self.qleSIdent.text()
         a = int(findIdent)
@@ -631,7 +637,7 @@ class SearchUI(QWidget):
         else:
             self.qleSIdent.clear()
             self.lblDeleteSident.setText("<font color='red'> in process>%s</font>" % self.Sident)
-            self.qleSIdent.setFocus()
+            self.qleSIdent.setFocus()"""
 
     def aprSvBatch(self):
         # method for verification of current input data to Batch label edit
@@ -648,29 +654,34 @@ class SearchUI(QWidget):
 
     def aprSpl(self):
         # #method for verification of current input data to Place label edit
+
         findpl = self.qleSPlace.text()
         a = findpl
         b = self.Spl
         if a == b:
             self.lblDeleteSpl.setText("<font color='green'> in process>%s</font>" % self.Spl)
+            self.aprlbl.setText("<font color='green'>correct>%s</font>" % self.Spl)
             self.writeToWHDeleted()
             qApp.con.Delete(self.Sid)
             self.qleSMatNum.clear()
-            self.qleSIdent.clear()
+            #self.qleSIdent.clear()
             self.qleSVenBat.clear()
             self.qleSPlace.clear()
             self.qleSMatNum.setFocus()
         else:
             self.qleSPlace.clear()
             self.lblDeleteSpl.setText("<font color='red'> in process>%s</font>" % self.Spl)
+            self.aprlbl.setText("<font color='red'>incorrect>%s</font>" % self.Spl)
             self.qleSPlace.setFocus()
 
     def writeToWHDeleted(self):
         #method for write searching data to CabelwarehouseDeleted DB
+
         valueDel = []
         state = 'deleted'
+        Sident = '90909090'
         valueDel.append(self.SmNum)
-        valueDel.append(self.Sident)
+        valueDel.append(Sident)
         valueDel.append(self.SvBatch)
         valueDel.append(self.Spl)
         valueDel.append(state)
