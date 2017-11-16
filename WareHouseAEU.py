@@ -2,7 +2,7 @@
 --------------------------PROGRAM--FOR--TEMPORARY--WAREHOUSE--ON--AEU----------------------
 1. This program can add data to DB CableWarehouse on cellular warehouse for production
     What class we using for this task?
-    -WarehouseMain -> LoginWidget -> MainButton -> inputUI
+    - WarehouseMain -> LoginWidget -> MainButton -> inputUI
 2. This program have secure module for work with different premission with data
     What class we using for this task?
     - WarehouseMain -> LoginWidget -> MainButton
@@ -31,11 +31,14 @@ class WarehouseMain(QMainWindow):
         self.centralWidget = QStackedWidget()
         self.setCentralWidget(self.centralWidget)
         self.loginWidget = LoginWidget(self)
+
         self.loginWidget.button.clicked.connect(self.UIinit)
+
         self.setWindowIcon(QIcon('.\images\scanner.png'))
         self.centralWidget.addWidget(self.loginWidget)
         self.setGeometry(300, 300, 848, 280)
         self.show()
+
 
     def UIinit(self):
         """----- Initializate Main Button widget -----"""
@@ -230,6 +233,7 @@ class LoginWidget(QWidget):
 
     def returnPrEntPass(self):
         """----- Call function for validate login and password  -----"""
+
         self.validAccess()
 
 
@@ -320,7 +324,7 @@ class inputUI(QWidget):
         # Label Edit for Place with parameters
         self.qlePlace = QLineEdit(self)
         self.qlePlace.setMaxLength(9)
-        self.qlePlace.setInputMask('w9e-99-99')
+        #self.qlePlace.setInputMask('PSA-99-99')
         self.qlePlace.setToolTip('Сюди <b>проскануйте будь ласка шрих код місця на складі який знадить на стелажі</b>')
         self.qlePlace.returnPressed.connect(self.verifyData)
 
@@ -387,7 +391,7 @@ class inputUI(QWidget):
         login = qApp.con.logi
 
         #Create list for write to DB
-        status = 'wait'
+        status = 'on_place'
         descript = login
         self.qleValues = []
         self.qleValues.append(self.textMatNum)
@@ -535,7 +539,7 @@ class SearchUI(QWidget):
         # Label edit for Place with properties
         self.qleSPlace = QLineEdit(self)
         self.qleSPlace.setMaxLength(9)
-        self.qleSPlace.setInputMask('w9e-99-99')
+        #self.qleSPlace.setInputMask('PSA-99-99')
         self.qleSPlace.returnPressed.connect(self.aprSpl)
 
         #Tooltip for label edit
@@ -678,7 +682,7 @@ class SearchUI(QWidget):
         #method for write searching data to CabelwarehouseDeleted DB
 
         valueDel = []
-        state = 'deleted'
+        state = 'in_process'
         Sident = '90909090'
         valueDel.append(self.SmNum)
         valueDel.append(Sident)

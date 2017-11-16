@@ -11,7 +11,7 @@ class TakeDataSql ():
         try:
             self.connectionAeu = pyodbc.connect('Driver={SQL Server};'
                                             'Server=UACVDB01\SQL2008EXPRESS;'
-                                            'Database=aeu;'
+                                            'Database=kanban;'
                                             'uid=%s;pwd=%s' % (uidSql, passSql))
             self.cursor = self.connectionAeu.cursor()
             self.st = 0
@@ -39,6 +39,7 @@ class TakeDataSql ():
 
     def SelectPassword(self, login):
         """------ This funtion for reading data from table CableWarehouse -------"""
+
         try:
 
             cursor = self.cursor
@@ -54,7 +55,7 @@ class TakeDataSql ():
         try:
             cursor =self.cursor
             selectVerifySql = ("SELECT [material], [vendor_batch], [place] \
-                                  FROM [aeu].[dbo].[CableWarehouse] WHERE [material] = '%s' AND [vendor_batch] = '%s'" % (valueMatNum, valueVedorBatch))
+                                  FROM [kanban].[dbo].[CableWarehouse] WHERE [material] = '%s' AND [vendor_batch] = '%s'" % (valueMatNum, valueVedorBatch))
             cursor.execute(selectVerifySql)
             self.results = cursor.fetchall()
 

@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['WareHouseAEU.py'],
+a = Analysis(['setup.py'],
              pathex=['D:\\LearnPython\\AEU'],
              binaries=[],
              datas=[],
@@ -18,16 +18,12 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
-          exclude_binaries=True,
-          name='WareHouseAEU',
+          a.binaries,
+          a.zipfiles,
+          a.datas,
+          name='setup',
           debug=False,
           strip=False,
           upx=True,
+          runtime_tmpdir=None,
           console=False )
-coll = COLLECT(exe,
-               a.binaries,
-               a.zipfiles,
-               a.datas,
-               strip=False,
-               upx=True,
-               name='WareHouseAEU')
